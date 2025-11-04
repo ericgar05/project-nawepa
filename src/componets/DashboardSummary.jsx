@@ -5,26 +5,21 @@ import "../styles/DashboardSummary.css";
 function DashboardSummary() {
   const { inventoryByCategory } = useInventory();
 
-  // Mapeo de categorías a iconos y colores para un diseño más visual
   const categoryStyles = {
     Limpieza: { color: "blue" },
     Papeleria: { color: "purple" },
     Mantenimiento: { color: "orange" },
-
-    // Añade más categorías aquí si es necesario
   };
 
-  const defaultStyle = { color: "gray" }; // Estilo por defecto
+  const defaultStyle = { color: "gray" };
 
   const getCategoryStyle = (categoryName) => {
     return categoryStyles[categoryName] || defaultStyle;
   };
 
-  // Si no hay datos, no mostramos nada o un mensaje de carga
   if (Object.keys(inventoryByCategory).length === 0) {
     return <p>Calculando resumen de inventario...</p>;
   }
-
   return (
     <div className="summary-container">
       {Object.entries(inventoryByCategory).map(([category, totalStock]) => {

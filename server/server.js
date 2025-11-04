@@ -16,7 +16,7 @@ app.get("/inventario", async (req, res) => {
       text: `
         SELECT 
           i.id, i.nombre_producto, i.codigo_producto, i.fecha_entrada, i.stock,
-          c.categoryname AS categoria_nombre 
+          c.categoryname AS categoria_nombre, i.categoria_id
         FROM inventario i
         JOIN categorias c ON i.categoria_id = c.id
         ORDER BY i.fecha_entrada DESC
@@ -121,7 +121,6 @@ app.post("/inventario", async (req, res) => {
       });
     }
 
-    // 1. Buscar si el producto ya existe
     const existingProduct = await db.query({
       text: "SELECT * FROM inventario WHERE codigo_producto = $1",
       params: [codigo_producto],
@@ -130,28 +129,37 @@ app.post("/inventario", async (req, res) => {
     let result;
 
     if (existingProduct.rows.length > 0) {
-      // 2. Si existe, actualizar el stock y la fecha de entrada
       console.log(
         `Producto existente encontrado. Actualizando stock para ${codigo_producto}.`
       );
       result = await db.query({
-        text: `UPDATE inventario 
-               SET stock = stock + $1, fecha_entrada = $2 
-               WHERE codigo_producto = $3 RETURNING *`,
+        text: `
+          WITH updated AS (
+            UPDATE inventario 
+            SET stock = stock + $1, fecha_entrada = $2 
+            WHERE codigo_producto = $3 
+            RETURNING *
+          )
+          SELECT u.*, c.categoryname AS categoria_nombre FROM updated u
+          JOIN categorias c ON u.categoria_id = c.id;`,
         params: [stock, fecha_entrada, codigo_producto],
       });
       const updatedProduct = result.rows[0];
       console.log("Producto actualizado:", updatedProduct);
       return res.status(200).json(updatedProduct);
     } else {
-      // 3. Si no existe, insertar un nuevo producto
       console.log(
         `Producto no encontrado. Creando nuevo producto ${codigo_producto}.`
       );
       result = await db.query({
-        text: `INSERT INTO inventario 
-               (nombre_producto, codigo_producto, fecha_entrada, categoria_id, stock) 
-               VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+        text: `
+          WITH inserted AS (
+            INSERT INTO inventario (nombre_producto, codigo_producto, fecha_entrada, categoria_id, stock) 
+            VALUES ($1, $2, $3, $4, $5) 
+            RETURNING *
+          )
+          SELECT i.*, c.categoryname AS categoria_nombre FROM inserted i
+          JOIN categorias c ON i.categoria_id = c.id;`,
         params: [
           nombre_producto,
           codigo_producto,
@@ -162,6 +170,9 @@ app.post("/inventario", async (req, res) => {
       });
       const newProduct = result.rows[0];
       console.log("Producto insertado:", newProduct);
+      // Ya no es necesario recargar todo en el frontend si la respuesta es completa
+      // Pero mantener fetchProducts() en el cliente es más robusto por si hay otros cambios.
+      // Aquí simplemente aseguramos que la respuesta sea consistente.
       return res.status(201).json(newProduct);
     }
   } catch (error) {

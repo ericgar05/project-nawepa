@@ -87,7 +87,7 @@ export const InventoryProvider = ({ children }) => {
         },
         body: JSON.stringify(formInventory),
       });
-
+      //Aqui me da todo
       const responseData = await response.json();
 
       if (!response.ok) {
@@ -110,11 +110,12 @@ export const InventoryProvider = ({ children }) => {
   };
 
   const value = {
-    products,
-    categorias, // Expuesto en el contexto
-    inventoryByCategory, // Exponemos el nuevo estado
-    lowStockAlerts, // Exponemos las alertas
     handleProduct,
+    products,
+    categorias,
+    inventoryByCategory,
+    lowStockAlerts,
+    fetchProducts,
   };
 
   return (

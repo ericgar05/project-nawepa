@@ -2,41 +2,41 @@ import React from "react";
 import { useInventory } from "./contexts/InventoryContext";
 
 const Distribution = () => {
-  const { inventory } = useInventory();
+  const { inventoryByCategory } = useInventory();
 
-  const total = Object.values(inventory).reduce((sum, value) => sum + value, 0);
+  // Mapeo de categorías a íconos y clases para mantener el estilo
+  const categoryDetails = {
+    Limpieza: { icono: "🧼", tipo: "limpieza" },
+    Papeleria: { icono: "📄", tipo: "papeleria" },
+    Mantenimiento: { icono: "🔧", tipo: "mantenimiento" },
+    // Agrega más categorías si es necesario
+  };
+  const defaultDetails = { icono: "📦", tipo: "default" };
 
-  const distribucion = [
-    {
-      categoria: "Limpieza",
-      valor: inventory.limpieza,
-      icono: "🧼",
-      tipo: "limpieza",
-    },
-    {
-      categoria: "Papelería",
-      valor: inventory.papeleria,
-      icono: "📄",
-      tipo: "papeleria",
-    },
-    {
-      categoria: "Mantenimiento",
-      valor: inventory.mantenimiento,
-      icono: "🔧",
-      tipo: "mantenimiento",
-    },
-  ].map((item) => ({
-    ...item,
-    porcentaje: total > 0 ? Math.round((item.valor / total) * 100) + "%" : "0%",
-  }));
+  const total = Object.values(inventoryByCategory).reduce(
+    (sum, value) => sum + value,
+    0
+  );
+
+  const distribucion = Object.entries(inventoryByCategory).map(
+    ([categoria, valor]) => {
+      const details = categoryDetails[categoria] || defaultDetails;
+      return {
+        categoria,
+        valor,
+        ...details,
+        porcentaje: total > 0 ? Math.round((valor / total) * 100) + "%" : "0%",
+      };
+    }
+  );
 
   return (
     <div className="distribution">
       <h2>Distribución de Productos</h2>
       <p className="distribution-subtitle">Inventario total por categoría</p>
 
-      {distribucion.map((item, index) => (
-        <div key={index} className="distribution-item">
+      {distribucion.map((item) => (
+        <div key={item.categoria} className="distribution-item">
           <div className={`distribution-icon ${item.tipo}`}>{item.icono}</div>
           <div className="distribution-info">
             <div className="distribution-category">{item.categoria}</div>
