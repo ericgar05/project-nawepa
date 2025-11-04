@@ -1,0 +1,92 @@
+.summary-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 24px;
+  padding: 0 24px 24px 24px; /* Reducimos el padding superior a 0 */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.summary-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-left: 5px solid; /* El color se definirá en las clases de color */
+}
+
+.summary-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.summary-card-title {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #333;
+  text-align: left;
+}
+
+.summary-card-stock {
+  margin: 0;
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: #4299e1;
+  line-height: 1.1;
+}
+
+.summary-card-label {
+  margin: 5px 0 0 0;
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.summary-card-icon {
+  font-size: 2rem;
+  opacity: 0.7;
+}
+
+/* Paleta de Colores */
+.summary-card.color-blue {
+  border-left-color: #3498db;
+}
+.summary-card.color-blue .summary-card-stock {
+  color: #3498db;
+}
+
+.summary-card.color-purple {
+  border-left-color: #8e44ad;
+}
+.summary-card.color-purple .summary-card-stock {
+  color: #8e44ad;
+}
+
+.summary-card.color-orange {
+  border-left-color: #f39c12;
+}
+.summary-card.color-orange .summary-card-stock {
+  color: #f39c12;
+}
+
+.summary-card.color-brown {
+  border-left-color: #a0522d;
+}
+.summary-card.color-brown .summary-card-stock {
+  color: #a0522d;
+}
+
+.summary-card.color-gray {
+  border-left-color: #7f8c8d;
+}
+.summary-card.color-gray .summary-card-stock {
+  color: #7f8c8d;
+}

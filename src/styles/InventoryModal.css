@@ -1,0 +1,35 @@
+/* Los estilos base del modal se pueden compartir o importar desde AddProductModal.css si se refactoriza */
+/* Por ahora, asumimos que los estilos de .modal-overlay, .modal-content, etc., ya están definidos globalmente o en otro archivo importado */
+
+.inventory-list {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.inventory-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+}
+
+.inventory-table th,
+.inventory-table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+
+.inventory-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+}
+
+.inventory-table tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.error-message {
+  color: #e53e3e;
+}
