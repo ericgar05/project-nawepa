@@ -36,7 +36,6 @@ function AddProductModal({ isOpen, onClose }) {
       const existingProduct = products.find((p) => p.codigo_producto === value);
       console.log("Lo que tiene en esta variable es:", existingProduct);
       if (existingProduct) {
-        // Si el producto existe, llenamos el formulario con sus datos
         setFormInventory((prev) => ({
           ...prev,
           nombre_producto: existingProduct.nombre_producto,

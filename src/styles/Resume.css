@@ -1,12 +1,8 @@
 /* DashboardProducts.css */
 .home-container {
-  margin: 0;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  width: 100vw; /* Asegura que ocupe todo el ancho */
+  /* Eliminamos los estilos que causaban el desbordamiento. 
+     El layout ahora es controlado por .app-layout y .main-content */
+  width: 100%;
 }
 
 .dashboard-products {
@@ -408,4 +404,15 @@
   .metrica-valor {
     font-size: 2rem;
   }
+}
+
+/* --- NUEVO LAYOUT CON SIDEBAR --- */
+.app-layout {
+  display: flex;
+}
+
+.main-content {
+  flex-grow: 1;
+  margin-left: 260px; /* Mismo ancho que la sidebar */
+  padding: 2rem;
 }

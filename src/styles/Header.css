@@ -41,13 +41,9 @@
   font-size: 1.2rem;
 }
 
-.header-actions {
-  display: flex;
-  gap: 12px; /* Espacio entre los botones */
-}
-
 .btn-logout {
-  background-color: #e53e3e; /* Color rojo para indicar una acción destructiva */
+  background-color: #e53e3e;
+  padding: 10px 20px;
 }
 .btn-logout:hover {
   background-color: #c53030;

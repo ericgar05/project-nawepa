@@ -47,6 +47,21 @@ app.get("/categorias", async (req, res) => {
   }
 });
 
+// Ruta para obtener los niveles de usuario
+app.get("/niveles", async (req, res) => {
+  try {
+    const result = await db.query({
+      text: "SELECT id, levelsName, levelDescripcion AS levelsdescription FROM niveles ORDER BY levelsName ASC",
+    });
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error("Error al obtener niveles:", error);
+    res
+      .status(500)
+      .json({ error: "Error interno del servidor al obtener niveles" });
+  }
+});
+
 // --- Rutas existentes ---
 
 app.post("/login", async (req, res) => {
@@ -59,21 +74,18 @@ app.post("/login", async (req, res) => {
         .json({ error: "Nombre de usuario y contraseña son obligatorios" });
     }
 
-    // niveles.levelsName,
-    //       permisos.fecha_asignacion
-    //       FROM
-    //       usuarios
-    //       JOIN
-    //       permisos ON usuarios.id = permisos.usuario_id
-    //       JOIN
-    //       niveles ON permisos.nivel_id = niveles.id
-    //       WHERE
     const result = await db.query({
       text: `SELECT 
             usuarios.id, 
             usuarios.username, 
-            usuarios.userpassword
-            FROM usuarios WHERE usuarios.username = $1;`,
+            usuarios.userpassword,
+            niveles.id AS nivel_id,
+            niveles.levelsName AS nivel_nombre,
+            niveles.levelDescripcion AS nivel_descripcion
+            FROM usuarios 
+            JOIN permisos ON usuarios.id = permisos.usuario_id
+            JOIN niveles ON permisos.nivel_id = niveles.id
+            WHERE usuarios.username = $1;`,
       params: [nombre],
     });
 
@@ -86,7 +98,9 @@ app.post("/login", async (req, res) => {
       usuario: {
         id: user.id,
         name: user.username,
-        password: user.userpassword,
+        nivel_id: user.nivel_id,
+        nivel_nombre: user.nivel_nombre,
+        nivel_descripcion: user.nivel_descripcion,
       },
     });
   } catch (error) {
@@ -184,6 +198,128 @@ app.post("/inventario", async (req, res) => {
   }
 });
 
+// Ruta para añadir nuevo personal
+app.post("/personal", async (req, res) => {
+  try {
+    const { nombre, apellido, sueldo, cargo } = req.body;
+
+    if (!nombre || !apellido || !sueldo || !cargo) {
+      return res.status(400).json({
+        error: "Todos los campos son obligatorios.",
+      });
+    }
+
+    const result = await db.query({
+      text: `
+        INSERT INTO personal (nombre, apellido, sueldo, cargo) 
+        VALUES ($1, $2, $3, $4) 
+        RETURNING *;
+      `,
+      params: [nombre, apellido, sueldo, cargo],
+    });
+
+    const newPersonnel = result.rows[0];
+    console.log("Personal añadido:", newPersonnel);
+    return res.status(201).json(newPersonnel);
+  } catch (error) {
+    console.error("Error al registrar personal:", error);
+    // Asumiendo que la tabla se llama 'personal'
+    if (error.code === "42P01") {
+      // 'undefined_table' error code in PostgreSQL
+      return res.status(500).json({
+        error: "Error del servidor: La tabla 'personal' no existe.",
+      });
+    }
+    return res.status(500).json({
+      error: "Error del servidor al añadir personal",
+      detalle: error.message,
+    });
+  }
+});
+
+// Ruta para añadir un nuevo usuario
+app.post("/usuarios", async (req, res) => {
+  console.log("📥 Recibiendo solicitud para crear usuario:", req.body);
+
+  try {
+    const { username, password, nivel_id } = req.body;
+    console.log("🔍 Verificando datos del usuario:", { username, nivel_id });
+    console.log(req.body);
+
+    if (!username || !password || !nivel_id) {
+      console.log("❌ Datos incompletos");
+      return res.status(400).json({
+        error: "Nombre de usuario, contraseña y nivel son obligatorios.",
+      });
+    }
+
+    console.log("🔍 Verificando usuario existente...");
+    const existingUser = await db.query({
+      text: "SELECT id FROM usuarios WHERE username = $1",
+      params: [username],
+    });
+
+    if (existingUser.rows.length > 0) {
+      console.log("❌ Usuario ya existe");
+      return res.status(409).json({
+        error: "El nombre de usuario ya está en uso.",
+      });
+    }
+
+    console.log("🔍 Verificando nivel existente...");
+    const nivelExists = await db.query({
+      text: "SELECT id FROM niveles WHERE id = $1",
+      params: [nivel_id],
+    });
+
+    if (nivelExists.rows.length === 0) {
+      console.log("❌ Nivel no existe");
+      return res.status(400).json({
+        error: "El nivel de usuario seleccionado no es válido.",
+      });
+    }
+
+    console.log("🔄 Iniciando transacción...");
+    const client = await db.pool.connect();
+
+    try {
+      await client.query("BEGIN");
+
+      // ✅ CORRECCIÓN: Usar userPassword en lugar de password
+      console.log("📝 Insertando usuario...");
+      const userResult = await client.query({
+        text: "INSERT INTO usuarios (username, userpassword) VALUES ($1, $2) RETURNING id, username",
+        values: [username, password], // ✅ CORRECCIÓN: Usar 'values' en lugar de 'params'
+      });
+
+      const newUser = userResult.rows[0];
+      console.log("✅ Usuario insertado:", newUser);
+
+      console.log("🔗 Asignando permiso...");
+      await client.query({
+        text: "INSERT INTO permisos (usuario_id, nivel_id) VALUES ($1, $2)",
+        values: [newUser.id, nivel_id], // ✅ CORRECCIÓN: Usar 'values' en lugar de 'params'
+      });
+
+      await client.query("COMMIT");
+      console.log("✅ Transacción completada");
+
+      return res.status(201).json(newUser);
+    } catch (error) {
+      await client.query("ROLLBACK");
+      console.error("❌ Error en transacción:", error);
+      throw error;
+    } finally {
+      client.release();
+    }
+  } catch (error) {
+    console.error("💥 Error general al registrar usuario:", error);
+    return res.status(500).json({
+      error: "Error del servidor al añadir usuario",
+      detalle: error.message,
+    });
+  }
+});
 await db.pool
   .connect()
   .then(() => {
