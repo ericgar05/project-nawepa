@@ -2,7 +2,7 @@ import { useAuth } from "./contexts/AuthContext";
 import "../styles/Header.css";
 
 function Header() {
-  const { userData, handleLogout } = useAuth();
+  const { userData } = useAuth();
 
   return (
     <header className="dashboard-header">
@@ -12,9 +12,9 @@ function Header() {
           <p className="dashboard-subtitle">Bienvenido, {userData.name}</p>
         )}
       </div>
-      <button onClick={handleLogout} className="btn btn-logout">
+      {/* <button onClick={handleLogout} className="btn btn-logout">
         Cerrar Sesión
-      </button>
+      </button> */}
     </header>
   );
 }

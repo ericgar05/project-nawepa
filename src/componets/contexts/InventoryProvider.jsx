@@ -3,13 +3,12 @@ import { InventoryContext } from "./InventoryContext";
 
 export const InventoryProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
-  const [categorias, setCategorias] = useState([]); // Descomentado y inicializado
+  const [categorias, setCategorias] = useState([]);
   const [inventoryByCategory, setInventoryByCategory] = useState({});
   const [lowStockAlerts, setLowStockAlerts] = useState([]);
 
-  const LOW_STOCK_THRESHOLD = 10; // Umbral para considerar stock bajo
+  const LOW_STOCK_THRESHOLD = 10;
 
-  // Función para recargar los productos desde el servidor
   const fetchProducts = async () => {
     try {
       const productsResponse = await fetch("http://localhost:4000/inventario");
@@ -27,9 +26,7 @@ export const InventoryProvider = ({ children }) => {
     }
   };
 
-  // useEffect para cargar datos iniciales desde el backend
   useEffect(() => {
-    // Función para cargar las categorías
     const fetchCategorias = async () => {
       try {
         const categoriasResponse = await fetch(
@@ -46,36 +43,29 @@ export const InventoryProvider = ({ children }) => {
       }
     };
 
-    fetchProducts(); // Carga los productos
-    fetchCategorias(); // Carga las categorías
-  }, []); // El array vacío asegura que se ejecute solo una vez al montar
-
-  // useEffect para calcular el inventario por categoría cuando los productos cambian
+    fetchProducts();
+    fetchCategorias();
+  }, []);
   useEffect(() => {
     const categoryTotals = products.reduce((acc, product) => {
-      // Obtenemos el nombre de la categoría del producto
       const categoryName = product.categoria_nombre;
 
-      // Si la categoría ya existe en el acumulador, sumamos el stock
       if (acc[categoryName]) {
         acc[categoryName] += product.stock;
       } else {
-        // Si no, la inicializamos con el stock del producto actual
         acc[categoryName] = product.stock;
       }
       return acc;
     }, {});
 
     setInventoryByCategory(categoryTotals);
-  }, [products]); // Se ejecuta cada vez que la lista de productos cambia
-
-  // useEffect para calcular las alertas de stock bajo
+  }, [products]);
   useEffect(() => {
     const alerts = products.filter(
       (product) => product.stock > 0 && product.stock <= LOW_STOCK_THRESHOLD
     );
     setLowStockAlerts(alerts);
-  }, [products]); // Se ejecuta cada vez que la lista de productos cambia
+  }, [products]);
 
   const handleProduct = async (formInventory) => {
     console.log("Datos del inventario:", formInventory);
@@ -87,7 +77,6 @@ export const InventoryProvider = ({ children }) => {
         },
         body: JSON.stringify(formInventory),
       });
-      //Aqui me da todo
       const responseData = await response.json();
 
       if (!response.ok) {
@@ -99,8 +88,6 @@ export const InventoryProvider = ({ children }) => {
 
       console.log("Producto agregado exitosamente:", responseData);
 
-      // En lugar de añadir el producto devuelto, volvemos a pedir la lista completa.
-      // Esto asegura que el nuevo producto tenga el 'categoria_nombre' del JOIN.
       await fetchProducts();
       return responseData;
     } catch (error) {

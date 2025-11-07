@@ -1,9 +1,11 @@
 import React from "react";
 import { useAuth } from "./contexts/AuthContext";
-import "../styles/Sidebar.css"; // Crearemos este archivo para los estilos
+import "../styles/Sidebar.css";
+import { IconAdd, IconInventory, IconLogout } from "../assets/icons/Icons";
 
 function Sidebar({ onAddProductClick, onViewInventoryClick, onAddUserClick }) {
   const { userData } = useAuth();
+  const { handleLogout } = useAuth();
 
   // Condición para mostrar botones solo a administradores
   const isAdmin = userData && userData.nivel_nombre === "Administrador";
@@ -16,11 +18,11 @@ function Sidebar({ onAddProductClick, onViewInventoryClick, onAddUserClick }) {
       </div>
       <nav className="sidebar-nav">
         <button className="sidebar-button" onClick={onAddProductClick}>
-          <span className="sidebar-icon">+</span>
+          <IconAdd className="sidebar-icon-add" />
           Agregar Producto
         </button>
         <button className="sidebar-button" onClick={onViewInventoryClick}>
-          <span className="sidebar-icon">📄</span>
+          <IconInventory />
           Ver Inventario
         </button>
         {/* El botón "Añadir Usuario" solo se muestra si el usuario es Administrador */}
@@ -31,7 +33,12 @@ function Sidebar({ onAddProductClick, onViewInventoryClick, onAddUserClick }) {
           </button>
         )}
       </nav>
-      <div className="sidebar-footer"></div>
+      <footer className="sidebar-footer">
+        <button className="sidebar-button" onClick={handleLogout}>
+          <IconLogout />
+          Cerrar Sesión
+        </button>
+      </footer>
     </aside>
   );
 }

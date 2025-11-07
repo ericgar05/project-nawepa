@@ -60,7 +60,7 @@ function AddProductModal({ isOpen, onClose }) {
       // Para cualquier otro campo, actualizamos el estado normalmente
       const newValue =
         name === "categoria_id" || name === "stock"
-          ? parseInt(value, 10) || 0 // Usamos parseInt solo para los campos numéricos
+          ? parseInt(value, 10) || "" // Usamos parseInt solo para los campos numéricos
           : value;
       setFormInventory((prev) => ({
         ...prev,

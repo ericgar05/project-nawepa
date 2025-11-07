@@ -62,6 +62,20 @@ app.get("/niveles", async (req, res) => {
   }
 });
 
+// Ruta para obtener todo el personal
+app.get("/personal", async (req, res) => {
+  try {
+    const result = await db.query({
+      text: "SELECT id, nombre, apellido, cargo FROM personal ORDER BY nombre ASC",
+    });
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error("Error al obtener personal:", error);
+    res
+      .status(500)
+      .json({ error: "Error interno del servidor al obtener el personal" });
+  }
+});
 // --- Rutas existentes ---
 
 app.post("/login", async (req, res) => {
@@ -237,6 +251,57 @@ app.post("/personal", async (req, res) => {
   }
 });
 
+// Ruta para crear un nuevo movimiento (asignación de producto)
+app.post("/movimientos", async (req, res) => {
+  const { producto_id, personal_id, cantidad, fecha_movimiento } = req.body;
+
+  if (!producto_id || !personal_id || !cantidad || !fecha_movimiento) {
+    return res.status(400).json({ error: "Todos los campos son requeridos." });
+  }
+
+  if (cantidad <= 0) {
+    return res
+      .status(400)
+      .json({ error: "La cantidad debe ser mayor que cero." });
+  }
+
+  const client = await db.pool.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    // 1. Verificar y actualizar el stock del producto
+    const stockResult = await client.query({
+      text: "UPDATE inventario SET stock = stock - $1 WHERE id = $2 AND stock >= $1 RETURNING id, nombre_producto",
+      params: [cantidad, producto_id],
+    });
+
+    if (stockResult.rows.length === 0) {
+      throw new Error(
+        "Stock insuficiente o producto no encontrado. No se pudo realizar la asignación."
+      );
+    }
+
+    // 2. Insertar el registro del movimiento
+    const movimientoResult = await client.query({
+      text: "INSERT INTO movimientos (producto_id, personal_id, cantidad, fecha_movimiento, tipo_movimiento) VALUES ($1, $2, $3, $4, 'salida') RETURNING *",
+      params: [producto_id, personal_id, cantidad, fecha_movimiento],
+    });
+
+    await client.query("COMMIT");
+
+    res.status(201).json(movimientoResult.rows[0]);
+  } catch (error) {
+    await client.query("ROLLBACK");
+    console.error("Error en la transacción de movimiento:", error);
+    res.status(500).json({
+      error: "Error al procesar la asignación.",
+      detalle: error.message,
+    });
+  } finally {
+    client.release();
+  }
+});
 // Ruta para añadir un nuevo usuario
 app.post("/usuarios", async (req, res) => {
   console.log("📥 Recibiendo solicitud para crear usuario:", req.body);

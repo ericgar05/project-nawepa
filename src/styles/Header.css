@@ -1,8 +1,8 @@
 .dashboard-header {
-  background-color: #f8f9fa;
+  margin: 0;
+  margin-bottom: 30px;
   width: 100%;
   padding: 16px;
-  border-bottom: 1px solid #dee2e6;
   display: flex;
   justify-content: space-between; /* Clave para separar los elementos */
   align-items: center;
@@ -12,11 +12,11 @@
 .dashboard-title,
 .dashboard-subtitle {
   margin: 0; /* Quitamos márgenes para que se vean más juntos */
+  color: #fff;
+  font-size: 30px;
+  font-family: sans-serif;
 }
 
-.dashboard-subtitle {
-  color: #6c757d; /* Un color más suave para el subtítulo */
-}
 .btn {
   background-color: #4299e1;
   color: white;

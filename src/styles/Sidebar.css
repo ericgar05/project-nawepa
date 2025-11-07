@@ -3,14 +3,16 @@
   background-color: var(--color-surface);
   border-right: 1px solid var(--color-border);
   display: flex;
-  flex-direction: column;
-  height: 100vh;
+  flex-direction: column; /* Asegura que los elementos se apilen verticalmente */
+  min-height: 100vh; /* Ocupa al menos el 100% de la altura de la ventana */
   position: fixed;
   top: 0;
   left: 0;
   padding: 1.5rem;
   box-sizing: border-box;
   z-index: 100;
+  background-color: #17368d;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar-header {
@@ -23,19 +25,21 @@
 .sidebar-title {
   margin: 0;
   font-size: 1.8rem;
-  color: var(--color-primary);
+  color: #fff;
 }
 
 .sidebar-subtitle {
   margin: 0;
   font-size: 0.9rem;
-  color: var(--color-text-secondary);
+  color: #fff;
 }
 
 .sidebar-nav {
+  color: #fff;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  flex-grow: 1; /* Permite que la navegación crezca y ocupe el espacio disponible */
 }
 
 .sidebar-button {
@@ -58,4 +62,18 @@
 
 .sidebar-button:hover {
   background-color: var(--color-background);
+}
+
+svg {
+  width: 24px;
+  height: 24px;
+  fill: #fff;
+}
+
+.sidebar-footer {
+  margin-top: auto; /* Empuja el footer hacia la parte inferior */
+  padding-top: 1.5rem; /* Espacio superior para separar del contenido de navegación */
+  border-top: 1px solid var(--color-border); /* Línea divisoria */
+  /* Otros estilos si es necesario para el botón de logout */
+  color: #fff;
 }

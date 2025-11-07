@@ -1,8 +1,22 @@
 /* DashboardProducts.css */
-.home-container {
-  /* Eliminamos los estilos que causaban el desbordamiento. 
-     El layout ahora es controlado por .app-layout y .main-content */
+.main-content {
   width: 100%;
+  flex-grow: 1;
+  margin-left: 260px; /* Mismo ancho que la sidebar */
+  padding: 2rem;
+  background-color: #2276d6;
+}
+
+.home-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+}
+.resume-container {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
 }
 
 .dashboard-products {
@@ -16,11 +30,10 @@
 
 /* Layout Principal */
 .dashboard-layout {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 24px;
-  max-width: 1400px;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  gap: 50px;
+  /* max-width: 1400px; */
 }
 .resume-content {
   display: flex;
@@ -281,12 +294,17 @@
 
 /* Panel de Personal */
 .personal-panel {
+  width: auto;
+  height: auto;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   border-radius: 20px;
   padding: 28px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.3);
+}
+.panel-header {
+  width: auto;
 }
 
 .personal-stats {
@@ -406,13 +424,7 @@
   }
 }
 
-/* --- NUEVO LAYOUT CON SIDEBAR --- */
 .app-layout {
   display: flex;
-}
-
-.main-content {
-  flex-grow: 1;
-  margin-left: 260px; /* Mismo ancho que la sidebar */
-  padding: 2rem;
+  min-height: 100vh;
 }

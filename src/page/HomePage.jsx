@@ -1,7 +1,4 @@
 import { useState, useEffect } from "react";
-import "../styles/Resume.css";
-import Metrics from "../componets/Metrics";
-import Distribution from "../componets/Distribution";
 import Header from "../componets/Header";
 import Sidebar from "../componets/Sidebar";
 import AddProductModal from "../componets/AddProductModal";
@@ -40,7 +37,9 @@ function HomePage() {
         onAddUserClick={() => setUserModalOpen(true)}
       />
       <main className="main-content">
-        <Header />
+        <section className="header-content">
+          <Header />
+        </section>
         <section className="home-container">
           <AddProductModal
             isOpen={isAddProductModalOpen}
@@ -61,23 +60,21 @@ function HomePage() {
           />
           <div className="dashboard-layout">
             {/* Columna Izquierda (Principal) */}
-            <div className="left-column">
-              <DashboardSummary />
-              <AlertsPanel />
-            </div>
-            {/* Columna Derecha (Barra Lateral) */}
-            <div className="right-column">
-              <div className="personal-panel">
-                <div className="panel-header">
-                  <h2>Personal Activo</h2>
-                </div>
-                <button
-                  className="btn-primario"
-                  onClick={() => setPersonnelModalOpen(true)}
-                >
-                  Gestionar Personal
-                </button>
+
+            <DashboardSummary />
+
+            <AlertsPanel />
+
+            <div className="personal-panel">
+              <div className="panel-header">
+                <h2>Personal Activo</h2>
               </div>
+              <button
+                className="btn-primario"
+                onClick={() => setPersonnelModalOpen(true)}
+              >
+                Gestionar Personal
+              </button>
             </div>
           </div>
         </section>
