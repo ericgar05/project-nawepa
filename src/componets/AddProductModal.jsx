@@ -3,9 +3,8 @@ import "../styles/AddProductModal.css";
 import { useInventory } from "./contexts/InventoryContext";
 
 function AddProductModal({ isOpen, onClose }) {
-  const { handleProduct, categorias, products } = useInventory(); // Añadimos 'products'
+  const { handleProduct, categorias, products } = useInventory();
   console.log("Productos disponibles:", products);
-  //necesito que categoria ID me devuelva la categoria del producto en products
 
   const initialState = {
     nombre_producto: "",
@@ -31,9 +30,9 @@ function AddProductModal({ isOpen, onClose }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    if (name === "codigo_producto") {
-      const existingProduct = products.find((p) => p.codigo_producto === value);
+    //Cambiando la logica con respecto a los productos
+    if (name === "nombre_producto") {
+      const existingProduct = products.find((p) => p.nombre_producto === value);
       console.log("Lo que tiene en esta variable es:", existingProduct);
       if (existingProduct) {
         setFormInventory((prev) => ({
@@ -50,8 +49,8 @@ function AddProductModal({ isOpen, onClose }) {
         // Si no existe, limpiamos los campos relacionados (excepto el código que se está escribiendo)
         setFormInventory((prev) => ({
           ...prev,
-          nombre_producto: "",
-          codigo_producto: value,
+          nombre_producto: value,
+          codigo_producto: "",
           categoria_id: "",
         }));
         setIsExistingProduct(false);
@@ -60,7 +59,7 @@ function AddProductModal({ isOpen, onClose }) {
       // Para cualquier otro campo, actualizamos el estado normalmente
       const newValue =
         name === "categoria_id" || name === "stock"
-          ? parseInt(value, 10) || "" // Usamos parseInt solo para los campos numéricos
+          ? parseInt(value, 10) || ""
           : value;
       setFormInventory((prev) => ({
         ...prev,

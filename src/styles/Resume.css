@@ -32,8 +32,8 @@
 .dashboard-layout {
   display: flex;
   flex-direction: row;
-  gap: 50px;
-  /* max-width: 1400px; */
+  align-items: flex-start; /* Alinea los paneles en la parte superior */
+  gap: 24px;
 }
 .resume-content {
   display: flex;
@@ -309,7 +309,7 @@
 
 .personal-stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr; /* Cambiamos a una sola columna */
   gap: 16px;
   margin-bottom: 24px;
 }

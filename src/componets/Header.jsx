@@ -9,7 +9,7 @@ function Header() {
       <div className="header-title-group">
         <h1 className="dashboard-title">Dashboard</h1>
         {userData && (
-          <p className="dashboard-subtitle">Bienvenido, {userData.name}</p>
+          <h1 className="dashboard-subtitle">Bienvenido, {userData.name}</h1>
         )}
       </div>
       {/* <button onClick={handleLogout} className="btn btn-logout">

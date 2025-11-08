@@ -34,7 +34,6 @@ function AlertsPanel() {
           </p>
         )}
       </div>
-      <button className="btn-primario">Ver Historial de Alertas</button>
     </div>
   );
 }

@@ -31,6 +31,37 @@ app.get("/inventario", async (req, res) => {
   }
 });
 
+// Ruta para eliminar un producto del inventario
+app.delete("/inventario/:id", async (req, res) => {
+  const { id } = req.params; // Obtenemos el ID del producto desde la URL
+
+  try {
+    const result = await db.query({
+      text: "DELETE FROM inventario WHERE id = $1 RETURNING *;",
+      params: [id],
+    });
+
+    if (result.rowCount === 0) {
+      // Si no se eliminó ninguna fila, el producto no existía
+      return res.status(404).json({ error: "Producto no encontrado." });
+    }
+
+    // Si se eliminó, respondemos con éxito.
+    // Gracias a ON DELETE CASCADE, los movimientos asociados se borraron automáticamente.
+    res
+      .status(200)
+      .json({
+        message: "Producto eliminado exitosamente.",
+        deletedProduct: result.rows[0],
+      });
+  } catch (error) {
+    console.error("Error al eliminar el producto:", error);
+    res
+      .status(500)
+      .json({ error: "Error interno del servidor al eliminar el producto." });
+  }
+});
+
 // Ruta para obtener las categorías
 app.get("/categorias", async (req, res) => {
   try {
@@ -300,6 +331,35 @@ app.post("/movimientos", async (req, res) => {
     });
   } finally {
     client.release();
+  }
+});
+
+// Ruta para obtener el historial de movimientos (entregas)
+app.get("/movimientos", async (req, res) => {
+  try {
+    const result = await db.query({
+      text: `
+        SELECT 
+          m.id,
+          m.fecha_movimiento,
+          m.cantidad,
+          p.nombre AS personal_nombre,
+          p.apellido AS personal_apellido,
+          prod.nombre_producto
+        FROM movimientos m
+        JOIN personal p ON m.personal_id = p.id
+        JOIN inventario prod ON m.producto_id = prod.id
+        WHERE m.tipo_movimiento = 'salida'
+        ORDER BY m.fecha_movimiento DESC;
+      `,
+    });
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error("Error al obtener el historial de movimientos:", error);
+    res.status(500).json({
+      error: "Error interno del servidor al obtener el historial.",
+      detalle: error.message,
+    });
   }
 });
 // Ruta para añadir un nuevo usuario

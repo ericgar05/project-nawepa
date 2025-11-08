@@ -1,19 +1,17 @@
 .summary-container {
-  width: 40vh;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
   gap: 24px;
   margin: 20px;
   padding: 0 24px 24px 24px;
-  /* width: 100%; */
   box-sizing: border-box;
 }
 
 .summary-card {
   background-color: #ffffff;
   border-radius: 8px;
-  max-width: 300px;
+  min-width: 320px; /* Aumentamos el ancho mínimo de las tarjetas */
   padding: 20px;
   text-align: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);

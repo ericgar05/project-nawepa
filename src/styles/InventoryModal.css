@@ -33,3 +33,33 @@
 .error-message {
   color: #e53e3e;
 }
+
+/* Estilos para la celda de acciones y los botones (reutilizables) */
+.actions-cell {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.action-button svg {
+  width: 16px;
+  height: 16px;
+  fill: #555;
+}
+
+.action-button:hover {
+  background-color: #e0e0e0;
+}
