@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { useAuth } from "./contexts/AuthContext";
 import "../styles/Login.css";
+import logoNawepa from "../assets/logo.png"; // Importamos el logo
 
 function Login() {
   //const navigate = useNavigate();
@@ -20,7 +21,6 @@ function Login() {
       [e.target.name]: e.target.value,
     });
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     handleLogin(formData);
@@ -30,6 +30,7 @@ function Login() {
   return (
     <div className="login-container">
       <section className="login-content">
+        <img src={logoNawepa} alt="Logo de Nawepa" className="login-logo" />
         <h1>Iniciar Sesión</h1>
 
         <form className="form-user" onSubmit={handleSubmit}>

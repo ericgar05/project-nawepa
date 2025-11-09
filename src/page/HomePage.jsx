@@ -4,31 +4,31 @@ import Sidebar from "../componets/Sidebar";
 import AddProductModal from "../componets/AddProductModal";
 import InventoryModal from "../componets/InventoryModal";
 import DashboardSummary from "../componets/DashboardSummary";
-import AlertsPanel from "../components/AlertsPanel";
-import AddUserModal from "../components/AddUserModal"; // Asegúrate que la ruta es correcta
-import DeliveryHistoryModal from "../components/DeliveryHistoryModal"; // 1. Importamos el nuevo modal
-import PersonalPanel from "../components/PersonalPanel";
-import EmployeesModal from "../components/EmployeesModal";
-import AddPersonnelModal from "../components/AddPersonnelModal"; // 1. Importamos el nuevo modal de personal
+import AlertsPanel from "../componets/AlertsPanel";
+import AddUserModal from "../componets/AddUserModal";
+import DeliveryHistoryModal from "../componets/DeliveryHistoryModal";
+import PersonalPanel from "../componets/PersonalPanel";
+import EmployeesModal from "../componets/EmployeesModal";
+import AddPersonnelModal from "../componets/AddPersonnelModal";
 
 function HomePage() {
   const [isAddProductModalOpen, setAddProductModalOpen] = useState(false);
   const [isInventoryModalOpen, setInventoryModalOpen] = useState(false);
-  const [iconInventory, setIconInventory] = useState(false); // 1. Estado del ícono movido aquí
-  const [isAddPersonnelModalOpen, setAddPersonnelModalOpen] = useState(false); // 2. Añadimos estado para el modal
-  const [isEmployeesModalOpen, setEmployeesModalOpen] = useState(false); // 2. Añadimos el estado para el modal de empleados
+  const [iconInventory, setIconInventory] = useState(false);
+  const [isAddPersonnelModalOpen, setAddPersonnelModalOpen] = useState(false);
+  const [isEmployeesModalOpen, setEmployeesModalOpen] = useState(false);
   const [isUserModalOpen, setUserModalOpen] = useState(false);
-  const [isHistoryModalOpen, setHistoryModalOpen] = useState(false); // 2. Estado para el modal de historial
-  const [historyBook, setHistoryBook] = useState(false); // Estado del ícono del historial
+  const [isHistoryModalOpen, setHistoryModalOpen] = useState(false);
+  const [historyBook, setHistoryBook] = useState(false);
   const [niveles, setNiveles] = useState([]);
 
   const handleOpenInventoryModal = () => {
     setInventoryModalOpen(true);
-    setIconInventory(true); // Se activa al abrir
+    setIconInventory(true);
   };
   const handleCloseInventoryModal = () => {
     setInventoryModalOpen(false);
-    setIconInventory(false); // Se desactiva al cerrar
+    setIconInventory(false);
   };
 
   const handleOpenHistoryModal = () => {
@@ -59,11 +59,11 @@ function HomePage() {
       <Sidebar
         onAddProductClick={() => setAddProductModalOpen(true)}
         onViewInventoryClick={handleOpenInventoryModal}
-        onViewEmployeesClick={() => setEmployeesModalOpen(true)} // 3. Pasamos la función para abrir el modal
+        onViewEmployeesClick={() => setEmployeesModalOpen(true)}
         onAddUserClick={() => setUserModalOpen(true)}
-        onViewHistoryClick={handleOpenHistoryModal} // 3. Pasamos la función para abrir el historial
-        iconInventory={iconInventory} // 2. Pasamos el estado del ícono como prop
-        historyBook={historyBook} // Pasamos el estado del ícono del historial
+        onViewHistoryClick={handleOpenHistoryModal}
+        iconInventory={iconInventory}
+        historyBook={historyBook}
       />
       <main className="main-content">
         <section className="header-content">
@@ -76,7 +76,7 @@ function HomePage() {
           />
           <InventoryModal
             isOpen={isInventoryModalOpen}
-            onClose={handleCloseInventoryModal} // 3. Usamos la nueva función de cierre
+            onClose={handleCloseInventoryModal}
           />
           <EmployeesModal
             isOpen={isEmployeesModalOpen}
@@ -96,8 +96,6 @@ function HomePage() {
             onClose={() => setAddPersonnelModalOpen(false)}
           />
           <div className="dashboard-layout">
-            {/* Columna Izquierda (Principal) */}
-
             <DashboardSummary />
 
             <AlertsPanel />

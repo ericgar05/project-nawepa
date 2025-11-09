@@ -48,12 +48,10 @@ app.delete("/inventario/:id", async (req, res) => {
 
     // Si se eliminó, respondemos con éxito.
     // Gracias a ON DELETE CASCADE, los movimientos asociados se borraron automáticamente.
-    res
-      .status(200)
-      .json({
-        message: "Producto eliminado exitosamente.",
-        deletedProduct: result.rows[0],
-      });
+    res.status(200).json({
+      message: "Producto eliminado exitosamente.",
+      deletedProduct: result.rows[0],
+    });
   } catch (error) {
     console.error("Error al eliminar el producto:", error);
     res
@@ -246,9 +244,9 @@ app.post("/inventario", async (req, res) => {
 // Ruta para añadir nuevo personal
 app.post("/personal", async (req, res) => {
   try {
-    const { nombre, apellido, sueldo, cargo } = req.body;
+    const { nombre, apellido, cargo } = req.body;
 
-    if (!nombre || !apellido || !sueldo || !cargo) {
+    if (!nombre || !apellido || !cargo) {
       return res.status(400).json({
         error: "Todos los campos son obligatorios.",
       });
@@ -256,11 +254,11 @@ app.post("/personal", async (req, res) => {
 
     const result = await db.query({
       text: `
-        INSERT INTO personal (nombre, apellido, sueldo, cargo) 
-        VALUES ($1, $2, $3, $4) 
+        INSERT INTO personal (nombre, apellido, cargo) 
+        VALUES ($1, $2, $3) 
         RETURNING *;
       `,
-      params: [nombre, apellido, sueldo, cargo],
+      params: [nombre, apellido, cargo],
     });
 
     const newPersonnel = result.rows[0];
@@ -284,9 +282,21 @@ app.post("/personal", async (req, res) => {
 
 // Ruta para crear un nuevo movimiento (asignación de producto)
 app.post("/movimientos", async (req, res) => {
-  const { producto_id, personal_id, cantidad, fecha_movimiento } = req.body;
+  const {
+    producto_id,
+    personal_id,
+    cantidad,
+    fecha_movimiento,
+    tipo_movimiento, // Añadimos tipo_movimiento
+  } = req.body;
 
-  if (!producto_id || !personal_id || !cantidad || !fecha_movimiento) {
+  if (
+    !producto_id ||
+    !personal_id ||
+    !cantidad ||
+    !fecha_movimiento ||
+    !tipo_movimiento
+  ) {
     return res.status(400).json({ error: "Todos los campos son requeridos." });
   }
 
@@ -296,33 +306,45 @@ app.post("/movimientos", async (req, res) => {
       .json({ error: "La cantidad debe ser mayor que cero." });
   }
 
+  // Iniciamos un cliente de la pool para la transacción
   const client = await db.pool.connect();
 
   try {
+    // Iniciamos la transacción
     await client.query("BEGIN");
-
-    // 1. Verificar y actualizar el stock del producto
+    console.log("Actualizando stock para producto:", producto_id);
     const stockResult = await client.query({
-      text: "UPDATE inventario SET stock = stock - $1 WHERE id = $2 AND stock >= $1 RETURNING id, nombre_producto",
-      params: [cantidad, producto_id],
+      text: "UPDATE inventario SET stock = stock - $1 WHERE id = $2 AND stock >= $1 RETURNING id",
+      values: [cantidad, producto_id],
     });
 
     if (stockResult.rows.length === 0) {
+      // Si no se devuelve ninguna fila, es porque el stock es insuficiente o el producto no existe.
       throw new Error(
         "Stock insuficiente o producto no encontrado. No se pudo realizar la asignación."
       );
     }
 
-    // 2. Insertar el registro del movimiento
+    // Paso 2: Si el stock se actualizó correctamente, insertamos el registro del movimiento.
+    console.log("Insertando movimiento:");
     const movimientoResult = await client.query({
-      text: "INSERT INTO movimientos (producto_id, personal_id, cantidad, fecha_movimiento, tipo_movimiento) VALUES ($1, $2, $3, $4, 'salida') RETURNING *",
-      params: [producto_id, personal_id, cantidad, fecha_movimiento],
-    });
+      text: "INSERT INTO movimientos (producto_id, personal_id, cantidad, fecha_movimiento, tipo_movimiento) VALUES ($1, $2, $3, $4, $5) RETURNING *",
 
+      values: [
+        producto_id,
+        personal_id,
+        cantidad,
+        fecha_movimiento,
+        tipo_movimiento,
+      ],
+    });
+    console.log("Movimiento insertado:", movimientoResult.rows[0]);
+    // Si todo fue bien, confirmamos la transacción
     await client.query("COMMIT");
 
     res.status(201).json(movimientoResult.rows[0]);
   } catch (error) {
+    // Si algo falló, revertimos todos los cambios de la transacción
     await client.query("ROLLBACK");
     console.error("Error en la transacción de movimiento:", error);
     res.status(500).json({
@@ -330,13 +352,16 @@ app.post("/movimientos", async (req, res) => {
       detalle: error.message,
     });
   } finally {
+    // Liberamos el cliente para que vuelva a la pool
     client.release();
   }
 });
 
 // Ruta para obtener el historial de movimientos (entregas)
+// --- CORRECCIÓN 2: RESTAURAR EL NOMBRE CORRECTO DE LA RUTA ---
 app.get("/movimientos", async (req, res) => {
   try {
+    console.log("🔄 Obteniendo historial de movimientos...");
     const result = await db.query({
       text: `
         SELECT 
@@ -353,6 +378,9 @@ app.get("/movimientos", async (req, res) => {
         ORDER BY m.fecha_movimiento DESC;
       `,
     });
+    console.log(
+      `✅ Historial obtenido: ${result.rows.length} registros encontrados.`
+    );
     res.status(200).json(result.rows);
   } catch (error) {
     console.error("Error al obtener el historial de movimientos:", error);

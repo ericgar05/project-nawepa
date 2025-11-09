@@ -4,7 +4,7 @@ function AddPersonnelModal({ isOpen, onClose }) {
   const initialState = {
     nombre: "",
     apellido: "",
-    sueldo: "",
+
     cargo: "",
   };
 
@@ -100,19 +100,6 @@ function AddPersonnelModal({ isOpen, onClose }) {
           </div>
 
           <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="sueldo">Sueldo</label>
-              <input
-                id="sueldo"
-                type="number"
-                name="sueldo"
-                value={formPersonnel.sueldo}
-                onChange={handleChange}
-                min="0"
-                step="0.01"
-                required
-              />
-            </div>
             <div className="form-group">
               <label htmlFor="cargo">Cargo</label>
               <input

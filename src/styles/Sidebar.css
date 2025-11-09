@@ -3,8 +3,8 @@
   background-color: var(--color-surface);
   border-right: 1px solid var(--color-border);
   display: flex;
-  flex-direction: column; /* Asegura que los elementos se apilen verticalmente */
-  min-height: 100vh; /* Ocupa al menos el 100% de la altura de la ventana */
+  flex-direction: column;
+  min-height: 100vh;
   position: fixed;
   top: 0;
   left: 0;
@@ -20,6 +20,12 @@
   margin-bottom: 1.5rem;
   border-bottom: 1px solid var(--color-border);
   text-align: center;
+}
+.sidebar-logo {
+  width: 120px;
+  margin-bottom: 1rem;
+  background-color: #fff;
+  border-radius: 100%;
 }
 
 .sidebar-title {
@@ -39,7 +45,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  flex-grow: 1; /* Permite que la navegación crezca y ocupe el espacio disponible */
+  flex-grow: 1;
 }
 
 .sidebar-button {
@@ -72,8 +78,8 @@ svg {
 
 .sidebar-footer {
   margin-top: auto; /* Empuja el footer hacia la parte inferior */
-  padding-top: 1.5rem; /* Espacio superior para separar del contenido de navegación */
-  border-top: 1px solid var(--color-border); /* Línea divisoria */
-  /* Otros estilos si es necesario para el botón de logout */
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-border);
+
   color: #fff;
 }

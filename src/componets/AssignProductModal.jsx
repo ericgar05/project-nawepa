@@ -9,10 +9,6 @@ function AssignProductModal({ employee, onClose }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
-  const productDetails = products.find(
-    (p) => p.id === parseInt(selectedProduct)
-  );
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedProduct || quantity <= 0) {
@@ -20,6 +16,20 @@ function AssignProductModal({ employee, onClose }) {
       return;
     }
 
+    // --- INICIO DE LA CORRECCIÓN ---
+    // Movemos la búsqueda del producto aquí dentro.
+    // Así nos aseguramos de usar el estado más reciente de 'selectedProduct'.
+    // Comparamos `p.id` (string) con `selectedProduct` (string) directamente.
+    const productDetails = products.find((p) => p.id === selectedProduct);
+    console.log("Product details es igual a", productDetails);
+
+    if (!productDetails) {
+      setError(
+        "El producto seleccionado no es válido. Por favor, recarga e intenta de nuevo."
+      );
+      return;
+    }
+    // --- FIN DE LA CORRECCIÓN ---
     if (productDetails.stock < quantity) {
       setError("La cantidad a asignar no puede ser mayor que el stock actual.");
       return;
@@ -29,18 +39,21 @@ function AssignProductModal({ employee, onClose }) {
     setError(null);
 
     try {
+      console.log("Asignando producto:", selectedProduct);
       const response = await fetch("http://localhost:4000/movimientos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          producto_id: parseInt(selectedProduct),
+          producto_id: selectedProduct, // Se envía como string, el backend lo maneja.
           personal_id: employee.id,
           cantidad: parseInt(quantity),
           fecha_movimiento: new Date().toISOString().split("T")[0],
+          tipo_movimiento: "salida",
         }),
       });
 
       const responseData = await response.json();
+      console.log(responseData);
 
       if (!response.ok) {
         throw new Error(
@@ -56,7 +69,11 @@ function AssignProductModal({ employee, onClose }) {
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }; // <-- LA LLAVE DE CIERRE DE handleSubmit VA AQUÍ
+
+  // También podemos obtener los detalles aquí para usarlos en la UI (como en el 'max' del input)
+  // Hacemos la misma corrección aquí para la UI.
+  const productDetailsForUI = products.find((p) => p.id === selectedProduct);
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -97,11 +114,11 @@ function AssignProductModal({ employee, onClose }) {
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
               min="1"
-              max={productDetails?.stock} // Limita la cantidad máxima al stock disponible
+              max={productDetailsForUI?.stock} // Limita la cantidad máxima al stock disponible
               required
             />
-            {productDetails && (
-              <small>Stock disponible: {productDetails.stock}</small>
+            {productDetailsForUI && (
+              <small>Stock disponible: {productDetailsForUI.stock}</small>
             )}
           </div>
 

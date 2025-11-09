@@ -1,6 +1,13 @@
 /* Los estilos base del modal se pueden compartir o importar desde AddProductModal.css si se refactoriza */
 /* Por ahora, asumimos que los estilos de .modal-overlay, .modal-content, etc., ya están definidos globalmente o en otro archivo importado */
 
+/* Contenedor para la tabla para permitir scroll horizontal si es necesario */
+.inventory-table-container {
+  overflow-x: auto; /* La magia sucede aquí */
+  max-height: 60vh;
+  width: 100%;
+}
+
 .inventory-list {
   max-height: 60vh;
   overflow-y: auto;
@@ -62,4 +69,22 @@
 
 .action-button:hover {
   background-color: #e0e0e0;
+}
+
+/* Estilos para el botón de exportar minimalista */
+.btn-export {
+  background-color: #f8f9fa; /* Un fondo muy claro */
+  border: 1px solid #dee2e6; /* Un borde sutil */
+  color: #495057; /* Color de texto oscuro pero no negro puro */
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-export:hover {
+  background-color: #e9ecef; /* Un poco más oscuro al pasar el ratón */
+  border-color: #ced4da;
 }

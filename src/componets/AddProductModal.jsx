@@ -25,6 +25,7 @@ function AddProductModal({ isOpen, onClose }) {
   const handleClose = () => {
     setFormInventory(initialState);
     setError(null);
+    setIsExistingProduct(false); // <-- AÑADIR ESTA LÍNEA
     onClose();
   };
 
@@ -39,8 +40,7 @@ function AddProductModal({ isOpen, onClose }) {
           ...prev,
           nombre_producto: existingProduct.nombre_producto,
           categoria_id: existingProduct.categoria_id,
-
-          codigo_producto: value,
+          codigo_producto: existingProduct.codigo_producto, // <-- CORRECCIÓN AQUÍ
           stock: 0,
         }));
         console.log(categorias);
@@ -72,6 +72,23 @@ function AddProductModal({ isOpen, onClose }) {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
+
+    // --- INICIO DE LA VALIDACIÓN ---
+    // Si estamos creando un producto nuevo (no actualizando stock)
+    if (!isExistingProduct) {
+      const codeExists = products.some(
+        (p) => p.codigo_producto === formInventory.codigo_producto
+      );
+      if (codeExists) {
+        setError(
+          "El código de producto ya está en uso. Por favor, elige otro."
+        );
+        setIsSubmitting(false);
+        return; // Detenemos el envío del formulario
+      }
+    }
+    // --- FIN DE LA VALIDACIÓN ---
+
     try {
       await handleProduct(formInventory);
       handleClose();

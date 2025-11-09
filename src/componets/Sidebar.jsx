@@ -1,5 +1,6 @@
 import { useAuth } from "./contexts/AuthContext";
-import { useState } from "react";
+
+import logoNawepa from "../assets/logo.png";
 import "../styles/Sidebar.css";
 import {
   IconAdd,
@@ -35,6 +36,7 @@ function Sidebar({
   return (
     <aside className="app-sidebar">
       <div className="sidebar-header">
+        <img src={logoNawepa} alt="Logo Nawepa" className="sidebar-logo" />
         <h1 className="sidebar-title">Nawepa</h1>
         <p className="sidebar-subtitle">Control de Inventario</p>
       </div>
@@ -43,16 +45,13 @@ function Sidebar({
           <IconAdd className="sidebar-icon-add" />
           Agregar Producto
         </button>
-        <button className="sidebar-button">
-          <IconSearch className="sidebar-icon-add" />
-          Buscar Producto
-        </button>
+
         <button className="sidebar-button" onClick={onViewHistoryClick}>
           {historyBook ? <IconBookOpen /> : <IconBook />}
           Historial De Entregas
         </button>
         <button className="sidebar-button" onClick={handleViewInventoryClick}>
-          {iconInventory ? <IconInventoryOpen /> : <IconInventory />}
+          {iconInventory ? <IconInventory /> : <IconInventoryOpen />}
           Ver Inventario
         </button>
         {/* El botón "Añadir Usuario" solo se muestra si el usuario es Administrador */}

@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import AssignProductModal from "./AssignProductModal";
-import { IconAssign } from "../assets/icons/Icons";
+import { IconAdd, IconAssign } from "../assets/icons/Icons";
 import "../styles/InventoryModal.css"; // Reutilizamos estilos de otros modales
+import * as XLSX from "xlsx";
 
 function EmployeesModal({ isOpen, onClose }) {
   const [employees, setEmployees] = useState([]);
@@ -46,6 +47,23 @@ function EmployeesModal({ isOpen, onClose }) {
     setSelectedEmployee(null);
   };
 
+  const handleExportPDF = () => {
+    const dataToExport = employees.map((employee) => ({
+      Nombre: employee.nombre,
+      Apellido: employee.apellido,
+      Cargo: employee.cargo,
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Empleados");
+
+    // Ajustar anchos de columna
+    worksheet["!cols"] = [{ wch: 20 }, { wch: 20 }, { wch: 25 }];
+
+    XLSX.writeFile(workbook, "Reporte_Empleados.xlsx");
+  };
+
   return (
     <>
       <div className="modal-overlay" onClick={onClose}>
@@ -54,6 +72,11 @@ function EmployeesModal({ isOpen, onClose }) {
             <h2>Gestionar Empleados</h2>
             <button className="close-button" onClick={onClose}>
               &times;
+            </button>
+          </div>
+          <div className="modal-actions" style={{ marginBottom: "1rem" }}>
+            <button className="btn-export" onClick={handleExportPDF}>
+              Exportar a Excel
             </button>
           </div>
           <div className="inventory-list">
@@ -81,7 +104,7 @@ function EmployeesModal({ isOpen, onClose }) {
                           title="Asignar Producto"
                           onClick={() => handleOpenAssignModal(employee)}
                         >
-                          <IconAssign />
+                          <IconAdd />
                         </button>
                       </td>
                     </tr>
