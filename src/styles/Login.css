@@ -1,52 +1,52 @@
-/* Contenedor principal para la página de login */
 .login-container {
   margin: 0;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(-45deg, #1a1a1a, #333333, #ff5722, #ff9800);
-  background-size: 400% 400%;
-  animation: gradientShift 20s ease infinite;
+  background-color: #121212;
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  width: 100vw; /* Asegura que ocupe todo el ancho */
+  width: 100vw;
 }
 
 .login-content {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center; /* Centramos el contenido horizontalmente */
+  align-items: center;
   text-align: center;
   width: 90%;
-  max-width: 400px; /* Un ancho máximo más estándar */
-  background-color: #f0f0f0;
+  max-width: 400px;
+  background-color: #1e1e1e;
   padding: 30px;
-  border-radius: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
 }
 
 .login-logo {
-  width: 300px; /* Ajusta este valor según lo necesites */
-  margin-bottom: 20px; /* Espacio entre el logo y el título */
+  width: 150px;
+  margin-bottom: 20px;
 }
 
 section > h1 {
   font-size: 30px;
-  color: #333;
+  color: #ffffff;
 }
 
 .form-user label {
   display: block;
   text-align: left;
-  color: #333;
+  color: #a0a0a0;
 }
 section > form > label > input {
   width: 90%;
   padding: 10px;
   margin-bottom: 30px;
-  border: none;
+  border: 1px solid #555;
   border-radius: 5px;
   margin-right: 40px;
+  background-color: #3a3a3a;
+  color: #f0f0f0;
 }
 
 section > form > button {
@@ -56,28 +56,16 @@ section > form > button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #ff9800;
   cursor: pointer;
   transition: border-color 0.25s;
-  color: #f0f0f0;
+  color: #121212;
 
   button:hover {
-    border-color: #646cff;
+    background-color: #f57c00;
   }
   button:focus,
   button:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;
-  }
-}
-
-@keyframes gradientShift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
   }
 }

@@ -2,11 +2,9 @@ import { useState } from "react";
 
 import { useAuth } from "./contexts/AuthContext";
 import "../styles/Login.css";
-import logoNawepa from "../assets/logo.png"; // Importamos el logo
+import logoNawepa from "../assets/logo.png"; // 1. Importar el logo
 
 function Login() {
-  //const navigate = useNavigate();
-
   const { handleLogin } = useAuth();
 
   const [formData, setFormData] = useState({
@@ -23,8 +21,15 @@ function Login() {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    handleLogin(formData);
-    setCargando(true);
+    setCargando(false); // 2. Poner en estado de carga
+    try {
+      await handleLogin(formData);
+      // Si el login es exitoso, el AuthProvider se encarga de redirigir.
+    } catch (error) {
+      // 3. Si hay un error (credenciales incorrectas), se captura aquí.
+      console.error("Fallo el inicio de sesión:", error);
+      setCargando(false); // 4. Se resetea el estado para permitir volver a escribir.
+    }
   };
 
   return (
@@ -59,7 +64,7 @@ function Login() {
             />
           </label>
 
-          <button className="login-buttom" type="submit" disabled={cargando}>
+          <button type="submit" className="login-buttom" disabled={cargando}>
             {cargando ? "Iniciando sesión..." : "Iniciar Sesión"}
           </button>
         </form>

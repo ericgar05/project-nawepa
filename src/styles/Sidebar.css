@@ -1,7 +1,7 @@
 .app-sidebar {
   width: 260px;
   background-color: var(--color-surface);
-  border-right: 1px solid var(--color-border);
+  border-right: 1px solid #3a3a3a;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -11,21 +11,21 @@
   padding: 1.5rem;
   box-sizing: border-box;
   z-index: 100;
-  background-color: #17368d;
+  background-color: #1e1e1e;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar-header {
   padding-bottom: 1.5rem;
   margin-bottom: 1.5rem;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid #3a3a3a;
   text-align: center;
 }
 .sidebar-logo {
   width: 120px;
   margin-bottom: 1rem;
-  background-color: #fff;
-  border-radius: 100%;
+  background-color: #f0f0f0;
+  border-radius: 8px;
 }
 
 .sidebar-title {
@@ -37,11 +37,10 @@
 .sidebar-subtitle {
   margin: 0;
   font-size: 0.9rem;
-  color: #fff;
+  color: #a0a0a0;
 }
 
 .sidebar-nav {
-  color: #fff;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -56,30 +55,28 @@
   padding: 12px 15px;
   border: none;
   background-color: transparent;
-  border-radius: var(--border-radius);
+  border-radius: 6px;
   font-size: 1rem;
   font-weight: 500;
-  color: var(--color-text-primary);
+  color: #e0e0e0;
   text-align: left;
   cursor: pointer;
-  transition: background-color var(--transition-speed),
-    color var(--transition-speed);
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .sidebar-button:hover {
-  background-color: var(--color-background);
+  background-color: #ff9800;
+  color: #121212;
 }
 
 svg {
   width: 24px;
   height: 24px;
-  fill: #fff;
+  fill: currentColor;
 }
 
 .sidebar-footer {
-  margin-top: auto; /* Empuja el footer hacia la parte inferior */
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--color-border);
-
-  color: #fff;
+  margin-top: auto;
+  padding-top: 1.5rem; /* Empuja el footer hacia la parte inferior */
+  border-top: 1px solid #3a3a3a;
 }

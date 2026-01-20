@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import AssignProductModal from "./AssignProductModal";
 import { IconAdd, IconAssign } from "../assets/icons/Icons";
-import "../styles/InventoryModal.css"; // Reutilizamos estilos de otros modales
+import "../styles/InventoryModal.css";
 import * as XLSX from "xlsx";
 
 function EmployeesModal({ isOpen, onClose }) {
@@ -58,7 +58,6 @@ function EmployeesModal({ isOpen, onClose }) {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Empleados");
 
-    // Ajustar anchos de columna
     worksheet["!cols"] = [{ wch: 20 }, { wch: 20 }, { wch: 25 }];
 
     XLSX.writeFile(workbook, "Reporte_Empleados.xlsx");

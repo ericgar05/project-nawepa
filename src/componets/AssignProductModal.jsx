@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useInventory } from "./contexts/InventoryContext";
-import "../styles/AddProductModal.css"; // Reutilizamos estilos del modal
+import "../styles/AddProductModal.css";
 
 function AssignProductModal({ employee, onClose }) {
   const { products, fetchProducts } = useInventory(); // Usamos el contexto de inventario
@@ -16,10 +16,6 @@ function AssignProductModal({ employee, onClose }) {
       return;
     }
 
-    // --- INICIO DE LA CORRECCIÓN ---
-    // Movemos la búsqueda del producto aquí dentro.
-    // Así nos aseguramos de usar el estado más reciente de 'selectedProduct'.
-    // Comparamos `p.id` (string) con `selectedProduct` (string) directamente.
     const productDetails = products.find((p) => p.id === selectedProduct);
     console.log("Product details es igual a", productDetails);
 
@@ -29,7 +25,6 @@ function AssignProductModal({ employee, onClose }) {
       );
       return;
     }
-    // --- FIN DE LA CORRECCIÓN ---
     if (productDetails.stock < quantity) {
       setError("La cantidad a asignar no puede ser mayor que el stock actual.");
       return;
@@ -69,10 +64,8 @@ function AssignProductModal({ employee, onClose }) {
     } finally {
       setIsSubmitting(false);
     }
-  }; // <-- LA LLAVE DE CIERRE DE handleSubmit VA AQUÍ
+  };
 
-  // También podemos obtener los detalles aquí para usarlos en la UI (como en el 'max' del input)
-  // Hacemos la misma corrección aquí para la UI.
   const productDetailsForUI = products.find((p) => p.id === selectedProduct);
 
   return (
@@ -96,7 +89,7 @@ function AssignProductModal({ employee, onClose }) {
               required
             >
               <option value="">Selecciona un producto</option>
-              {products
+              {products // Solo mostrar productos con stock
                 .filter((p) => p.stock > 0) // Solo mostrar productos con stock
                 .map((product) => (
                   <option key={product.id} value={product.id}>
@@ -114,7 +107,7 @@ function AssignProductModal({ employee, onClose }) {
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
               min="1"
-              max={productDetailsForUI?.stock} // Limita la cantidad máxima al stock disponible
+              max={productDetailsForUI?.stock}
               required
             />
             {productDetailsForUI && (

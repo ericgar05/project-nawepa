@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "../styles/AddProductModal.css"; // Importamos los estilos del modal
 
 function AddPersonnelModal({ isOpen, onClose }) {
   const initialState = {
@@ -74,43 +75,38 @@ function AddPersonnelModal({ isOpen, onClose }) {
         <form onSubmit={handleSubmit} className="modal-form">
           {error && <div className="error-banner">{error}</div>}
 
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="nombre">Nombre</label>
-              <input
-                id="nombre"
-                type="text"
-                name="nombre"
-                value={formPersonnel.nombre}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="apellido">Apellido</label>
-              <input
-                id="apellido"
-                type="text"
-                name="apellido"
-                value={formPersonnel.apellido}
-                onChange={handleChange}
-                required
-              />
-            </div>
+          <div className="form-group">
+            <label htmlFor="nombre">Nombre</label>
+            <input
+              id="nombre"
+              type="text"
+              name="nombre"
+              value={formPersonnel.nombre}
+              onChange={handleChange}
+              required
+            />
           </div>
-
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="cargo">Cargo</label>
-              <input
-                id="cargo"
-                type="text"
-                name="cargo"
-                value={formPersonnel.cargo}
-                onChange={handleChange}
-                required
-              />
-            </div>
+          <div className="form-group">
+            <label htmlFor="apellido">Apellido</label>
+            <input
+              id="apellido"
+              type="text"
+              name="apellido"
+              value={formPersonnel.apellido}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="cargo">Cargo</label>
+            <input
+              id="cargo"
+              type="text"
+              name="cargo"
+              value={formPersonnel.cargo}
+              onChange={handleChange}
+              required
+            />
           </div>
 
           <div className="modal-actions">

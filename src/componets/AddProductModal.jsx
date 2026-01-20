@@ -29,6 +29,15 @@ function AddProductModal({ isOpen, onClose }) {
     onClose();
   };
 
+  // Función simple para generar código basado en el nombre
+  const generateProductCode = (name) => {
+    if (!name) return "";
+    const prefix = name.substring(0, 3).toUpperCase();
+    const cleanName = prefix.replace(/[^A-Z]/g, "X");
+    const randomNum = Math.floor(1000 + Math.random() * 9000); // 4 dígitos
+    return `${cleanName}-${randomNum}`;
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     //Cambiando la logica con respecto a los productos
@@ -47,10 +56,13 @@ function AddProductModal({ isOpen, onClose }) {
         setIsExistingProduct(true);
       } else {
         // Si no existe, limpiamos los campos relacionados (excepto el código que se está escribiendo)
+        // GENERACIÓN AUTOMÁTICA DEL CÓDIGO AQUÍ:
+        const autoCode = generateProductCode(value);
+
         setFormInventory((prev) => ({
           ...prev,
           nombre_producto: value,
-          codigo_producto: "",
+          codigo_producto: autoCode, // Auto-set code
           categoria_id: "",
         }));
         setIsExistingProduct(false);
@@ -77,11 +89,11 @@ function AddProductModal({ isOpen, onClose }) {
     // Si estamos creando un producto nuevo (no actualizando stock)
     if (!isExistingProduct) {
       const codeExists = products.some(
-        (p) => p.codigo_producto === formInventory.codigo_producto
+        (p) => p.codigo_producto === formInventory.codigo_producto,
       );
       if (codeExists) {
         setError(
-          "El código de producto ya está en uso. Por favor, elige otro."
+          "El código de producto ya está en uso. Por favor, elige otro.",
         );
         setIsSubmitting(false);
         return; // Detenemos el envío del formulario
@@ -202,8 +214,8 @@ function AddProductModal({ isOpen, onClose }) {
               {isSubmitting
                 ? "Agregando..."
                 : isExistingProduct
-                ? "Añadir Stock"
-                : "Agregar Producto"}
+                  ? "Añadir Stock"
+                  : "Agregar Producto"}
             </button>
           </div>
         </form>

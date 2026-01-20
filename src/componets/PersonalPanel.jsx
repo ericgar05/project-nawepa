@@ -1,10 +1,21 @@
 import React, { useState, useEffect } from "react";
 import "../styles/Resume.css"; // Reutilizamos los estilos que ya existen
 import { IconAdd } from "../assets/icons/Icons";
+import { useAuth } from "./contexts/AuthContext";
 
 function PersonalPanel({ onAddPersonnelClick }) {
   const [personal, setPersonal] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { userData } = useAuth();
+
+  // Solo los administradores y supervisores pueden ver este panel
+  const canViewPanel =
+    userData?.nivel_nombre === "Administrador" ||
+    userData?.nivel_nombre === "Supervisor";
+
+  const canAddPersonnel =
+    userData?.nivel_nombre === "Administrador" ||
+    userData?.nivel_nombre === "Supervisor";
 
   useEffect(() => {
     const fetchPersonal = async () => {
@@ -25,6 +36,11 @@ function PersonalPanel({ onAddPersonnelClick }) {
     fetchPersonal();
   }, []);
 
+  // Si el usuario no tiene permisos, no renderizamos nada.
+  if (!canViewPanel) {
+    return null;
+  }
+
   return (
     <div className="personal-panel">
       <div className="panel-header">
@@ -42,9 +58,11 @@ function PersonalPanel({ onAddPersonnelClick }) {
           </div>
         </div>
       )}
-      <button className="btn-primario" onClick={onAddPersonnelClick}>
-        + Añadir Empleado
-      </button>
+      {canAddPersonnel && (
+        <button className="btn-primario" onClick={onAddPersonnelClick}>
+          + Añadir Empleado
+        </button>
+      )}
     </div>
   );
 }

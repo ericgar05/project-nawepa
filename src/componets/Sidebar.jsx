@@ -21,7 +21,7 @@ function Sidebar({
   onViewEmployeesClick,
   onViewHistoryClick,
   iconInventory,
-  historyBook, // Recibimos el estado del ícono del historial
+  historyBook,
 }) {
   const { userData } = useAuth();
   const { handleLogout } = useAuth();
@@ -30,8 +30,11 @@ function Sidebar({
     onViewInventoryClick();
   };
 
-  // Condición para mostrar botones solo a administradores
-  const isAdmin = userData && userData.nivel_nombre === "Administrador";
+  // Definimos los permisos basados en el rol del usuario
+  const userRole = userData?.nivel_nombre;
+  const isAdmin = userRole === "Administrador";
+  const isSupervisor = userRole === "Supervisor";
+  const isEmpleado = userRole === "Empleado";
 
   return (
     <aside className="app-sidebar">
@@ -41,26 +44,36 @@ function Sidebar({
         <p className="sidebar-subtitle">Control de Inventario</p>
       </div>
       <nav className="sidebar-nav">
-        <button className="sidebar-button" onClick={onAddProductClick}>
-          <IconAdd className="sidebar-icon-add" />
-          Agregar Producto
-        </button>
+        {(isAdmin || isSupervisor || isEmpleado) && (
+          <button className="sidebar-button" onClick={onAddProductClick}>
+            <IconAdd className="sidebar-icon-add" />
+            Agregar Producto
+          </button>
+        )}
 
-        <button className="sidebar-button" onClick={onViewHistoryClick}>
-          {historyBook ? <IconBookOpen /> : <IconBook />}
-          Historial De Entregas
-        </button>
-        <button className="sidebar-button" onClick={handleViewInventoryClick}>
-          {iconInventory ? <IconInventory /> : <IconInventoryOpen />}
-          Ver Inventario
-        </button>
-        {/* El botón "Añadir Usuario" solo se muestra si el usuario es Administrador */}
-        {isAdmin && (
+        {(isAdmin || isSupervisor) && (
+          <button className="sidebar-button" onClick={onViewHistoryClick}>
+            {historyBook ? <IconBookOpen /> : <IconBook />}
+            Historial De Entregas
+          </button>
+        )}
+
+        {(isAdmin || isSupervisor || isEmpleado) && (
+          <button className="sidebar-button" onClick={handleViewInventoryClick}>
+            {iconInventory ? <IconInventory /> : <IconInventoryOpen />}
+            Ver Inventario
+          </button>
+        )}
+
+        {(isAdmin || isSupervisor) && (
+          <button className="sidebar-button" onClick={onViewEmployeesClick}>
+            <IconEmployees />
+            Empleados
+          </button>
+        )}
+
+        {isAdmin && ( // Solo el Administrador puede añadir usuarios
           <>
-            <button className="sidebar-button" onClick={onViewEmployeesClick}>
-              <IconEmployees />
-              Empleados
-            </button>
             <button className="sidebar-button" onClick={onAddUserClick}>
               <IconUser />
               Añadir Usuario

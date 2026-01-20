@@ -9,7 +9,6 @@ export const PORT = 4000;
 app.use(cors());
 app.use(express.json());
 
-// Ruta para obtener todo el inventario
 app.get("/inventario", async (req, res) => {
   try {
     const result = await db.query({
@@ -31,9 +30,8 @@ app.get("/inventario", async (req, res) => {
   }
 });
 
-// Ruta para eliminar un producto del inventario
 app.delete("/inventario/:id", async (req, res) => {
-  const { id } = req.params; // Obtenemos el ID del producto desde la URL
+  const { id } = req.params;
 
   try {
     const result = await db.query({
@@ -42,12 +40,9 @@ app.delete("/inventario/:id", async (req, res) => {
     });
 
     if (result.rowCount === 0) {
-      // Si no se eliminó ninguna fila, el producto no existía
       return res.status(404).json({ error: "Producto no encontrado." });
     }
 
-    // Si se eliminó, respondemos con éxito.
-    // Gracias a ON DELETE CASCADE, los movimientos asociados se borraron automáticamente.
     res.status(200).json({
       message: "Producto eliminado exitosamente.",
       deletedProduct: result.rows[0],
@@ -60,10 +55,8 @@ app.delete("/inventario/:id", async (req, res) => {
   }
 });
 
-// Ruta para obtener las categorías
 app.get("/categorias", async (req, res) => {
   try {
-    // Asumiendo que tienes una tabla 'categorias' con 'id' y 'categoryname'
     const result = await db.query({
       text: "SELECT id, categoryname FROM categorias ORDER BY categoryname ASC",
     });
@@ -76,7 +69,6 @@ app.get("/categorias", async (req, res) => {
   }
 });
 
-// Ruta para obtener los niveles de usuario
 app.get("/niveles", async (req, res) => {
   try {
     const result = await db.query({
@@ -91,7 +83,6 @@ app.get("/niveles", async (req, res) => {
   }
 });
 
-// Ruta para obtener todo el personal
 app.get("/personal", async (req, res) => {
   try {
     const result = await db.query({
@@ -105,7 +96,6 @@ app.get("/personal", async (req, res) => {
       .json({ error: "Error interno del servidor al obtener el personal" });
   }
 });
-// --- Rutas existentes ---
 
 app.post("/login", async (req, res) => {
   try {
@@ -187,7 +177,7 @@ app.post("/inventario", async (req, res) => {
 
     if (existingProduct.rows.length > 0) {
       console.log(
-        `Producto existente encontrado. Actualizando stock para ${codigo_producto}.`
+        `Producto existente encontrado. Actualizando stock para ${codigo_producto}.`,
       );
       result = await db.query({
         text: `
@@ -206,7 +196,7 @@ app.post("/inventario", async (req, res) => {
       return res.status(200).json(updatedProduct);
     } else {
       console.log(
-        `Producto no encontrado. Creando nuevo producto ${codigo_producto}.`
+        `Producto no encontrado. Creando nuevo producto ${codigo_producto}.`,
       );
       result = await db.query({
         text: `
@@ -227,9 +217,6 @@ app.post("/inventario", async (req, res) => {
       });
       const newProduct = result.rows[0];
       console.log("Producto insertado:", newProduct);
-      // Ya no es necesario recargar todo en el frontend si la respuesta es completa
-      // Pero mantener fetchProducts() en el cliente es más robusto por si hay otros cambios.
-      // Aquí simplemente aseguramos que la respuesta sea consistente.
       return res.status(201).json(newProduct);
     }
   } catch (error) {
@@ -241,7 +228,51 @@ app.post("/inventario", async (req, res) => {
   }
 });
 
-// Ruta para añadir nuevo personal
+app.put("/inventario/:id", async (req, res) => {
+  const { id } = req.params;
+  const {
+    nombre_producto,
+    codigo_producto,
+    categoria_id,
+    stock,
+    fecha_entrada,
+  } = req.body;
+
+  try {
+    const result = await db.query({
+      text: `
+        UPDATE inventario 
+        SET nombre_producto = $1, codigo_producto = $2, categoria_id = $3, stock = $4, fecha_entrada = $5
+        WHERE id = $6 
+        RETURNING *;
+      `,
+      params: [
+        nombre_producto,
+        codigo_producto,
+        categoria_id,
+        stock,
+        fecha_entrada,
+        id,
+      ],
+    });
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Producto no encontrado." });
+    }
+
+    res.status(200).json({
+      message: "Producto actualizado exitosamente.",
+      updatedProduct: result.rows[0],
+    });
+  } catch (error) {
+    console.error("Error al actualizar el producto:", error);
+    res.status(500).json({
+      error: "Error interno del servidor al actualizar el producto.",
+      detalle: error.message,
+    });
+  }
+});
+
 app.post("/personal", async (req, res) => {
   try {
     const { nombre, apellido, cargo } = req.body;
@@ -266,9 +297,7 @@ app.post("/personal", async (req, res) => {
     return res.status(201).json(newPersonnel);
   } catch (error) {
     console.error("Error al registrar personal:", error);
-    // Asumiendo que la tabla se llama 'personal'
     if (error.code === "42P01") {
-      // 'undefined_table' error code in PostgreSQL
       return res.status(500).json({
         error: "Error del servidor: La tabla 'personal' no existe.",
       });
@@ -280,14 +309,13 @@ app.post("/personal", async (req, res) => {
   }
 });
 
-// Ruta para crear un nuevo movimiento (asignación de producto)
 app.post("/movimientos", async (req, res) => {
   const {
     producto_id,
     personal_id,
     cantidad,
     fecha_movimiento,
-    tipo_movimiento, // Añadimos tipo_movimiento
+    tipo_movimiento,
   } = req.body;
 
   if (
@@ -306,11 +334,9 @@ app.post("/movimientos", async (req, res) => {
       .json({ error: "La cantidad debe ser mayor que cero." });
   }
 
-  // Iniciamos un cliente de la pool para la transacción
   const client = await db.pool.connect();
 
   try {
-    // Iniciamos la transacción
     await client.query("BEGIN");
     console.log("Actualizando stock para producto:", producto_id);
     const stockResult = await client.query({
@@ -319,13 +345,11 @@ app.post("/movimientos", async (req, res) => {
     });
 
     if (stockResult.rows.length === 0) {
-      // Si no se devuelve ninguna fila, es porque el stock es insuficiente o el producto no existe.
       throw new Error(
-        "Stock insuficiente o producto no encontrado. No se pudo realizar la asignación."
+        "Stock insuficiente o producto no encontrado. No se pudo realizar la asignación.",
       );
     }
 
-    // Paso 2: Si el stock se actualizó correctamente, insertamos el registro del movimiento.
     console.log("Insertando movimiento:");
     const movimientoResult = await client.query({
       text: "INSERT INTO movimientos (producto_id, personal_id, cantidad, fecha_movimiento, tipo_movimiento) VALUES ($1, $2, $3, $4, $5) RETURNING *",
@@ -339,12 +363,10 @@ app.post("/movimientos", async (req, res) => {
       ],
     });
     console.log("Movimiento insertado:", movimientoResult.rows[0]);
-    // Si todo fue bien, confirmamos la transacción
     await client.query("COMMIT");
 
     res.status(201).json(movimientoResult.rows[0]);
   } catch (error) {
-    // Si algo falló, revertimos todos los cambios de la transacción
     await client.query("ROLLBACK");
     console.error("Error en la transacción de movimiento:", error);
     res.status(500).json({
@@ -352,13 +374,10 @@ app.post("/movimientos", async (req, res) => {
       detalle: error.message,
     });
   } finally {
-    // Liberamos el cliente para que vuelva a la pool
     client.release();
   }
 });
 
-// Ruta para obtener el historial de movimientos (entregas)
-// --- CORRECCIÓN 2: RESTAURAR EL NOMBRE CORRECTO DE LA RUTA ---
 app.get("/movimientos", async (req, res) => {
   try {
     console.log("🔄 Obteniendo historial de movimientos...");
@@ -379,7 +398,7 @@ app.get("/movimientos", async (req, res) => {
       `,
     });
     console.log(
-      `✅ Historial obtenido: ${result.rows.length} registros encontrados.`
+      `✅ Historial obtenido: ${result.rows.length} registros encontrados.`,
     );
     res.status(200).json(result.rows);
   } catch (error) {
@@ -390,7 +409,6 @@ app.get("/movimientos", async (req, res) => {
     });
   }
 });
-// Ruta para añadir un nuevo usuario
 app.post("/usuarios", async (req, res) => {
   console.log("📥 Recibiendo solicitud para crear usuario:", req.body);
 
@@ -438,20 +456,18 @@ app.post("/usuarios", async (req, res) => {
     try {
       await client.query("BEGIN");
 
-      // ✅ CORRECCIÓN: Usar userPassword en lugar de password
       console.log("📝 Insertando usuario...");
       const userResult = await client.query({
         text: "INSERT INTO usuarios (username, userpassword) VALUES ($1, $2) RETURNING id, username",
-        values: [username, password], // ✅ CORRECCIÓN: Usar 'values' en lugar de 'params'
+        values: [username, password],
       });
 
       const newUser = userResult.rows[0];
       console.log("✅ Usuario insertado:", newUser);
 
-      console.log("🔗 Asignando permiso...");
       await client.query({
         text: "INSERT INTO permisos (usuario_id, nivel_id) VALUES ($1, $2)",
-        values: [newUser.id, nivel_id], // ✅ CORRECCIÓN: Usar 'values' en lugar de 'params'
+        values: [newUser.id, nivel_id],
       });
 
       await client.query("COMMIT");

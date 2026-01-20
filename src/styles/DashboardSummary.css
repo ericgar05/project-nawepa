@@ -9,12 +9,12 @@
 }
 
 .summary-card {
-  background-color: #ffffff;
+  background-color: #1e1e1e;
   border-radius: 8px;
-  min-width: 320px; /* Aumentamos el ancho mínimo de las tarjetas */
+  min-width: 320px;
   padding: 20px;
   text-align: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   border-left: 5px solid; /* El color se definirá en las clases de color */
 }
@@ -34,7 +34,7 @@
 .summary-card-title {
   margin: 0;
   font-size: 1.25rem;
-  color: #333;
+  color: #e0e0e0;
   text-align: left;
 }
 
@@ -42,14 +42,14 @@
   margin: 0;
   font-size: 2.8rem;
   font-weight: 700;
-  color: #4299e1;
+  color: #ff9800;
   line-height: 1.1;
 }
 
 .summary-card-label {
   margin: 5px 0 0 0;
   font-size: 0.9rem;
-  color: #6c757d;
+  color: #a0a0a0;
 }
 
 .summary-card-icon {
@@ -59,17 +59,17 @@
 
 /* Paleta de Colores */
 .summary-card.color-blue {
-  border-left-color: #3498db;
+  border-left-color: #ff9800;
 }
 .summary-card.color-blue .summary-card-stock {
-  color: #3498db;
+  color: #ff9800;
 }
 
 .summary-card.color-purple {
-  border-left-color: #8e44ad;
+  border-left-color: #f57c00;
 }
 .summary-card.color-purple .summary-card-stock {
-  color: #8e44ad;
+  color: #f57c00;
 }
 
 .summary-card.color-orange {
@@ -80,15 +80,15 @@
 }
 
 .summary-card.color-brown {
-  border-left-color: #a0522d;
+  border-left-color: #ffb74d;
 }
 .summary-card.color-brown .summary-card-stock {
-  color: #a0522d;
+  color: #ffb74d;
 }
 
 .summary-card.color-gray {
-  border-left-color: #7f8c8d;
+  border-left-color: #e0e0e0;
 }
 .summary-card.color-gray .summary-card-stock {
-  color: #7f8c8d;
+  color: #e0e0e0;
 }

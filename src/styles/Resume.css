@@ -1,10 +1,9 @@
-/* DashboardProducts.css */
 .main-content {
   width: 100%;
   flex-grow: 1;
-  margin-left: 260px; /* Mismo ancho que la sidebar */
+  margin-left: 260px;
   padding: 2rem;
-  background-color: #2276d6;
+  background-color: #333333;
 }
 
 .home-container {
@@ -26,13 +25,10 @@
   gap: 10px;
 }
 
-/* Header */
-
-/* Layout Principal */
 .dashboard-layout {
   display: flex;
   flex-direction: row;
-  align-items: flex-start; /* Alinea los paneles en la parte superior */
+  align-items: flex-start;
   gap: 24px;
 }
 .resume-content {
@@ -41,12 +37,12 @@
   gap: 24px;
 }
 .metrica-card {
-  background: rgba(255, 255, 255, 0.95);
+  background: #1e1e1e;
   backdrop-filter: blur(10px);
   border-radius: 16px;
   padding: 28px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid #3a3a3a;
   transition: all 0.3s ease;
 }
 
@@ -65,7 +61,7 @@
 .metrica-titulo {
   font-size: 1rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: #a0a0a0;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -78,25 +74,24 @@
 .metrica-valor {
   font-size: 2.8rem;
   font-weight: 800;
-  color: #667eea;
+  color: #ff9800;
   line-height: 1;
   margin-bottom: 8px;
 }
 
 .metrica-descripcion {
   font-size: 0.9rem;
-  color: #6c757d;
+  color: #a0a0a0;
   font-weight: 500;
 }
 
-/* Panel de Distribución */
 .distribucion-panel {
-  background: rgba(255, 255, 255, 0.95);
+  background: #1e1e1e;
   backdrop-filter: blur(10px);
   border-radius: 20px;
   padding: 28px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid #3a3a3a;
 }
 
 .panel-header {
@@ -105,13 +100,13 @@
 
 .panel-header h2 {
   margin: 0 0 8px 0;
-  color: #2c3e50;
+  color: #ffffff;
   font-size: 1.4rem;
   font-weight: 700;
 }
 
 .panel-subtitle {
-  color: #6c757d;
+  color: #a0a0a0;
   margin: 0;
   font-size: 0.9rem;
 }
@@ -127,13 +122,13 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px;
-  background: #f8f9fa;
+  background: #2c2c2c;
   border-radius: 12px;
   transition: all 0.3s ease;
 }
 
 .distribucion-item:hover {
-  background: white;
+  background: #3a3a3a;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 }
 
@@ -154,28 +149,28 @@
 }
 
 .item-icono.limpieza {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: #ff9800;
   color: white;
 }
 .item-icono.papeleria {
-  background: linear-gradient(135deg, #f093fb, #f5576c);
+  background: #ffb74d;
   color: white;
 }
 .item-icono.mantenimiento {
-  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  background: #f57c00;
   color: white;
 }
 
 .item-texto h4 {
   margin: 0 0 4px 0;
-  color: #2c3e50;
+  color: #f0f0f0;
   font-size: 0.95rem;
   font-weight: 600;
 }
 
 .item-texto p {
   margin: 0;
-  color: #6c757d;
+  color: #a0a0a0;
   font-size: 0.85rem;
 }
 
@@ -186,7 +181,7 @@
 .item-valor .valor {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: #f0f0f0;
   display: block;
 }
 
@@ -196,14 +191,13 @@
   font-weight: 600;
 }
 
-/* Panel de Alertas */
 .alertas-panel {
-  background: rgba(255, 255, 255, 0.95);
+  background: #1e1e1e;
   backdrop-filter: blur(10px);
   border-radius: 20px;
   padding: 28px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid #3a3a3a;
 }
 
 .alertas-header {
@@ -215,13 +209,13 @@
 
 .alertas-header h2 {
   margin: 0;
-  color: #2c3e50;
+  color: #ffffff;
   font-size: 1.4rem;
   font-weight: 700;
 }
 
 .contador-alertas {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: #ff9800;
   color: white;
   padding: 6px 16px;
   border-radius: 20px;
@@ -242,30 +236,30 @@
   gap: 12px;
   padding: 16px;
   border-radius: 12px;
-  background: #f8f9fa;
+  background: #2c2c2c;
   border-left: 4px solid;
   transition: all 0.3s ease;
 }
 
 .alerta-item:hover {
   transform: translateX(4px);
-  background: white;
+  background: #3a3a3a;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 }
 
 .alerta-item.stock-bajo {
   border-left-color: #f39c12;
-  background: linear-gradient(135deg, #fef5e7, #fdebd0);
+  background: #413324;
 }
 
 .alerta-item.stock-critico {
   border-left-color: #e74c3c;
-  background: linear-gradient(135deg, #fdedec, #fddfdd);
+  background: #422c29;
 }
 
 .alerta-item.nuevo-pedido {
   border-left-color: #3498db;
-  background: linear-gradient(135deg, #ebf5fb, #d6eaf8);
+  background: #2a3a48;
 }
 
 .alerta-icono {
@@ -280,28 +274,27 @@
 
 .alerta-titulo {
   font-weight: 600;
-  color: #2c3e50;
+  color: #f0f0f0;
   margin: 0 0 4px 0;
   font-size: 0.95rem;
 }
 
 .alerta-descripcion {
-  color: #6c757d;
+  color: #a0a0a0;
   margin: 0;
   font-size: 0.85rem;
   line-height: 1.4;
 }
 
-/* Panel de Personal */
 .personal-panel {
   width: auto;
   height: auto;
-  background: rgba(255, 255, 255, 0.95);
+  background: #1e1e1e;
   backdrop-filter: blur(10px);
   border-radius: 20px;
   padding: 28px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid #3a3a3a;
 }
 .panel-header {
   width: auto;
@@ -309,7 +302,7 @@
 
 .personal-stats {
   display: grid;
-  grid-template-columns: 1fr; /* Cambiamos a una sola columna */
+  grid-template-columns: 1fr;
   gap: 16px;
   margin-bottom: 24px;
 }
@@ -317,29 +310,28 @@
 .personal-stat {
   text-align: center;
   padding: 16px;
-  background: #f8f9fa;
+  background: #2c2c2c;
   border-radius: 12px;
 }
 
 .stat-valor {
   font-size: 1.8rem;
   font-weight: 800;
-  color: #667eea;
+  color: #ff9800;
   display: block;
   margin-bottom: 4px;
 }
 
 .stat-label {
   font-size: 0.8rem;
-  color: #6c757d;
+  color: #a0a0a0;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-/* Botones */
 .btn-primario {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: #ff9800;
   color: white;
   border: none;
   padding: 12px 24px;
@@ -353,10 +345,9 @@
 
 .btn-primario:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
 }
 
-/* Responsive */
 @media (max-width: 1200px) {
   .dashboard-layout {
     grid-template-columns: 1fr;

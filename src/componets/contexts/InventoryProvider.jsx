@@ -18,7 +18,7 @@ export const InventoryProvider = ({ children }) => {
       } else {
         console.error(
           "Error al recargar productos:",
-          productsData.error || "Error desconocido"
+          productsData.error || "Error desconocido",
         );
       }
     } catch (error) {
@@ -30,7 +30,7 @@ export const InventoryProvider = ({ children }) => {
     const fetchCategorias = async () => {
       try {
         const categoriasResponse = await fetch(
-          "http://localhost:4000/categorias"
+          "http://localhost:4000/categorias",
         );
         const categoriasData = await categoriasResponse.json();
         if (categoriasResponse.ok) {
@@ -62,7 +62,7 @@ export const InventoryProvider = ({ children }) => {
   }, [products]);
   useEffect(() => {
     const alerts = products.filter(
-      (product) => product.stock > 0 && product.stock <= LOW_STOCK_THRESHOLD
+      (product) => product.stock > 0 && product.stock <= LOW_STOCK_THRESHOLD,
     );
     setLowStockAlerts(alerts);
   }, [products]);
@@ -96,8 +96,35 @@ export const InventoryProvider = ({ children }) => {
     }
   };
 
+  const updateProduct = async (id, updatedData) => {
+    try {
+      const response = await fetch(`http://localhost:4000/inventario/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedData),
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          responseData.error || "Error al actualizar el producto",
+        );
+      }
+
+      await fetchProducts();
+      return responseData;
+    } catch (error) {
+      console.error("Error al actualizar producto:", error);
+      throw error;
+    }
+  };
+
   const value = {
     handleProduct,
+    updateProduct,
     products,
     categorias,
     inventoryByCategory,

@@ -4,21 +4,21 @@
   width: 100%;
   padding: 16px;
   display: flex;
-  justify-content: space-between; /* Clave para separar los elementos */
+  justify-content: space-between;
   align-items: center;
-  box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
+  box-sizing: border-box;
 }
 
 .dashboard-title,
 .dashboard-subtitle {
-  margin: 0; /* Quitamos márgenes para que se vean más juntos */
+  margin: 0;
   color: #fff;
   font-size: 30px;
   font-family: sans-serif;
 }
 
 .btn {
-  background-color: #4299e1;
+  background-color: #ff9800;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -32,7 +32,7 @@
 }
 
 .btn:hover {
-  background-color: #3182ce;
+  background-color: #f57c00;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }

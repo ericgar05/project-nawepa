@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "../styles/InventoryModal.css"; // Reutilizamos estilos existentes
+import "../styles/InventoryModal.css";
 import * as XLSX from "xlsx";
 
 function DeliveryHistoryModal({ isOpen, onClose }) {
@@ -48,7 +48,6 @@ function DeliveryHistoryModal({ isOpen, onClose }) {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Historial");
 
-    // Ajustar anchos de columna
     worksheet["!cols"] = [{ wch: 30 }, { wch: 25 }, { wch: 10 }, { wch: 15 }];
 
     XLSX.writeFile(workbook, "Historial_Entregas.xlsx");
@@ -57,7 +56,7 @@ function DeliveryHistoryModal({ isOpen, onClose }) {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div
-        className="modal-content inventory-modal-content" // Usamos una clase que ya tiene buenos estilos base
+        className="modal-content inventory-modal-content"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="modal-header">
