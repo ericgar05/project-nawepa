@@ -9,8 +9,6 @@ import {
   IconEmployees,
   IconUser,
   IconBook,
-  IconBookOpen,
-  IconInventoryOpen,
   IconSearch,
 } from "../assets/icons/Icons";
 
@@ -20,8 +18,6 @@ function Sidebar({
   onAddUserClick,
   onViewEmployeesClick,
   onViewHistoryClick,
-  iconInventory,
-  historyBook,
 }) {
   const { userData } = useAuth();
   const { handleLogout } = useAuth();
@@ -53,14 +49,14 @@ function Sidebar({
 
         {(isAdmin || isSupervisor) && (
           <button className="sidebar-button" onClick={onViewHistoryClick}>
-            {historyBook ? <IconBookOpen /> : <IconBook />}
+            <IconBook />
             Historial De Entregas
           </button>
         )}
 
         {(isAdmin || isSupervisor || isEmpleado) && (
           <button className="sidebar-button" onClick={handleViewInventoryClick}>
-            {iconInventory ? <IconInventory /> : <IconInventoryOpen />}
+            <IconInventory />
             Ver Inventario
           </button>
         )}

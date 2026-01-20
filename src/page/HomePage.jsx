@@ -14,30 +14,24 @@ import AddPersonnelModal from "../componets/AddPersonnelModal";
 function HomePage() {
   const [isAddProductModalOpen, setAddProductModalOpen] = useState(false);
   const [isInventoryModalOpen, setInventoryModalOpen] = useState(false);
-  const [iconInventory, setIconInventory] = useState(false);
   const [isAddPersonnelModalOpen, setAddPersonnelModalOpen] = useState(false);
   const [isEmployeesModalOpen, setEmployeesModalOpen] = useState(false);
   const [isUserModalOpen, setUserModalOpen] = useState(false);
   const [isHistoryModalOpen, setHistoryModalOpen] = useState(false);
-  const [historyBook, setHistoryBook] = useState(false);
   const [niveles, setNiveles] = useState([]);
 
   const handleOpenInventoryModal = () => {
     setInventoryModalOpen(true);
-    setIconInventory(true);
   };
   const handleCloseInventoryModal = () => {
     setInventoryModalOpen(false);
-    setIconInventory(false);
   };
 
   const handleOpenHistoryModal = () => {
     setHistoryModalOpen(true);
-    setHistoryBook(true);
   };
   const handleCloseHistoryModal = () => {
     setHistoryModalOpen(false);
-    setHistoryBook(false);
   };
 
   useEffect(() => {
@@ -62,8 +56,6 @@ function HomePage() {
         onViewEmployeesClick={() => setEmployeesModalOpen(true)}
         onAddUserClick={() => setUserModalOpen(true)}
         onViewHistoryClick={handleOpenHistoryModal}
-        iconInventory={iconInventory}
-        historyBook={historyBook}
       />
       <main className="main-content">
         <section className="header-content">
