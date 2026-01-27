@@ -71,7 +71,11 @@ function InventoryModal({ isOpen, onClose }) {
       doc.text("Reporte de Inventario", 50, 20);
       doc.setFontSize(10);
       doc.text("Empresa Nawepa", 50, 28);
-      doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 50, 34);
+      doc.text(
+        `Fecha: ${new Date().toLocaleDateString()} - Hora: ${new Date().toLocaleTimeString()}`,
+        50,
+        34,
+      );
 
       // Tabla
       autoTable(doc, {
@@ -86,6 +90,19 @@ function InventoryModal({ isOpen, onClose }) {
         ]),
         styles: { fontSize: 8 },
         headStyles: { fillColor: [22, 160, 133] },
+      });
+
+      // Firma Centrada
+      const finalY = doc.lastAutoTable.finalY;
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const centerX = pageWidth / 2;
+      const lineLength = 70;
+      const startX = centerX - lineLength / 2;
+      const endX = centerX + lineLength / 2;
+
+      doc.line(startX, finalY + 40, endX, finalY + 40);
+      doc.text("Firma de Responsable", centerX, finalY + 45, {
+        align: "center",
       });
 
       doc.save("Reporte_Inventario.pdf");
@@ -104,6 +121,20 @@ function InventoryModal({ isOpen, onClose }) {
           new Date(item.fecha_entrada).toLocaleDateString(),
         ]),
       });
+
+      // Firma (Fallback) - Centrada
+      const finalY = doc.lastAutoTable.finalY;
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const centerX = pageWidth / 2;
+      const lineLength = 70;
+      const startX = centerX - lineLength / 2;
+      const endX = centerX + lineLength / 2;
+
+      doc.line(startX, finalY + 40, endX, finalY + 40);
+      doc.text("Firma de Responsable", centerX, finalY + 45, {
+        align: "center",
+      });
+
       doc.save("Reporte_Inventario.pdf");
     };
   };
