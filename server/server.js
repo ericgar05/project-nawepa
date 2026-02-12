@@ -309,6 +309,63 @@ app.post("/personal", async (req, res) => {
   }
 });
 
+app.delete("/personal/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await db.query({
+      text: "DELETE FROM personal WHERE id = $1 RETURNING *;",
+      params: [id],
+    });
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Personal no encontrado." });
+    }
+
+    res.status(200).json({
+      message: "Personal eliminado exitosamente.",
+      deletedPersonnel: result.rows[0],
+    });
+  } catch (error) {
+    console.error("Error al eliminar personal:", error);
+    res
+      .status(500)
+      .json({ error: "Error interno del servidor al eliminar personal." });
+  }
+});
+
+app.put("/personal/:id", async (req, res) => {
+  const { id } = req.params;
+  const { nombre, apellido, cargo } = req.body;
+
+  try {
+    const result = await db.query({
+      text: `
+        UPDATE personal 
+        SET nombre = $1, apellido = $2, cargo = $3
+        WHERE id = $4 
+        RETURNING *;
+      `,
+      params: [nombre, apellido, cargo, id],
+    });
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Personal no encontrado." });
+    }
+
+    res.status(200).json({
+      message: "Personal actualizado exitosamente.",
+      updatedPersonnel: result.rows[0],
+    });
+  } catch (error) {
+    console.error("Error al actualizar personal:", error);
+    res.status(500).json({
+      error: "Error interno del servidor al actualizar personal.",
+      detalle: error.message,
+    });
+  }
+});
+
 app.post("/movimientos", async (req, res) => {
   const {
     producto_id,

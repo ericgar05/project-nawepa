@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import AssignProductModal from "./AssignProductModal";
-import { IconAdd, IconAssign } from "../assets/icons/Icons";
+import EditPersonnelModal from "./EditPersonnelModal";
+import {
+  IconAdd,
+  IconAssign,
+  IconEdit,
+  IconDelete,
+} from "../assets/icons/Icons";
 import "../styles/InventoryModal.css";
 import * as XLSX from "xlsx";
 
@@ -9,6 +15,7 @@ function EmployeesModal({ isOpen, onClose }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
 
   useEffect(() => {
@@ -45,6 +52,45 @@ function EmployeesModal({ isOpen, onClose }) {
   const handleCloseAssignModal = () => {
     setIsAssignModalOpen(false);
     setSelectedEmployee(null);
+  };
+
+  const handleOpenEditModal = (employee) => {
+    setSelectedEmployee(employee);
+    setIsEditModalOpen(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setIsEditModalOpen(false);
+    setSelectedEmployee(null);
+  };
+
+  const handleUpdateEmployee = (updatedEmployee) => {
+    setEmployees((prevEmployees) =>
+      prevEmployees.map((emp) =>
+        emp.id === updatedEmployee.id ? updatedEmployee : emp,
+      ),
+    );
+  };
+
+  const handleDeleteEmployee = async (id) => {
+    if (window.confirm("¿Estás seguro de que deseas eliminar este empleado?")) {
+      try {
+        const response = await fetch(`http://localhost:4000/personal/${id}`, {
+          method: "DELETE",
+        });
+
+        if (!response.ok) {
+          throw new Error("Error al eliminar el empleado.");
+        }
+
+        setEmployees((prevEmployees) =>
+          prevEmployees.filter((emp) => emp.id !== id),
+        );
+      } catch (error) {
+        console.error("Error:", error);
+        alert("No se pudo eliminar el empleado.");
+      }
+    }
   };
 
   const handleExportPDF = () => {
@@ -105,6 +151,20 @@ function EmployeesModal({ isOpen, onClose }) {
                         >
                           <IconAdd />
                         </button>
+                        <button
+                          className="action-button"
+                          title="Editar Empleado"
+                          onClick={() => handleOpenEditModal(employee)}
+                        >
+                          <IconEdit />
+                        </button>
+                        <button
+                          className="action-button delete"
+                          title="Eliminar Empleado"
+                          onClick={() => handleDeleteEmployee(employee.id)}
+                        >
+                          <IconDelete />
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -118,6 +178,14 @@ function EmployeesModal({ isOpen, onClose }) {
         <AssignProductModal
           employee={selectedEmployee}
           onClose={handleCloseAssignModal}
+        />
+      )}
+      {isEditModalOpen && (
+        <EditPersonnelModal
+          isOpen={isEditModalOpen}
+          employee={selectedEmployee}
+          onClose={handleCloseEditModal}
+          onUpdate={handleUpdateEmployee}
         />
       )}
     </>
