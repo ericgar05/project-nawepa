@@ -25,14 +25,21 @@ function InventoryModal({ isOpen, onClose }) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [productToEdit, setProductToEdit] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  const { categorias } = useInventory(); // Asegúrate de obtener las categorías del contexto si están disponibles ahí, o define cómo obtenerlas
 
   const filteredProducts = products.filter((item) => {
     const term = searchTerm.toLowerCase();
-    return (
+    const matchesSearch =
       item.nombre_producto.toLowerCase().includes(term) ||
-      item.codigo_producto.toLowerCase().includes(term) ||
-      item.categoria_nombre.toLowerCase().includes(term)
-    );
+      item.codigo_producto.toLowerCase().includes(term);
+
+    const matchesCategory = selectedCategory
+      ? item.categoria_nombre === selectedCategory
+      : true;
+
+    return matchesSearch && matchesCategory;
   });
 
   const handleDelete = async (productId, productName) => {
@@ -177,10 +184,13 @@ function InventoryModal({ isOpen, onClose }) {
             gap: "10px",
           }}
         >
-          <div className="search-container">
+          <div
+            className="search-container"
+            style={{ display: "flex", gap: "10px" }}
+          >
             <input
               type="text"
-              placeholder="Buscar por producto, código, categoría..."
+              placeholder="Buscar por producto o código..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="search-input"
@@ -188,9 +198,30 @@ function InventoryModal({ isOpen, onClose }) {
                 padding: "0.5rem",
                 borderRadius: "5px",
                 border: "1px solid #ccc",
-                minWidth: "300px",
+                minWidth: "250px",
               }}
             />
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              style={{
+                padding: "0.5rem",
+                borderRadius: "5px",
+                border: "1px solid #ccc",
+                backgroundColor: "#3a3a3a",
+                color: "#f0f0f0",
+              }}
+            >
+              <option value="">Todas las categorías</option>
+              {/* Extraer categorías únicas de los productos si 'categorias' no está en useInventory, pero asumimos que lo extraemos de los productos para estar seguros */}
+              {[...new Set(products.map((p) => p.categoria_nombre))].map(
+                (cat, index) => (
+                  <option key={index} value={cat}>
+                    {cat}
+                  </option>
+                ),
+              )}
+            </select>
           </div>
           <div style={{ display: "flex", gap: "10px" }}>
             <button className="btn-export" onClick={handleExportPDF}>

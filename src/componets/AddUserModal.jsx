@@ -68,6 +68,7 @@ function AddUserModal({ isOpen, onClose, niveles }) {
       }
 
       console.log("✅ Usuario creado exitosamente");
+      window.alert("el usuario ha sido creado correctamente");
       handleClose();
     } catch (error) {
       console.error("❌ Error completo:", error);

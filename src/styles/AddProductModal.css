@@ -59,6 +59,33 @@
   font-size: 1rem;
   background-color: #3a3a3a;
   color: #f0f0f0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Estilos para inputs de solo lectura o desactivados */
+.form-group input:read-only,
+.form-group input:disabled,
+.form-group select:disabled {
+  background-color: #444; /* Fondo sombreado/grisáceo */
+  color: #999; /* Texto atenuado */
+  cursor: not-allowed;
+  border-color: #4a4a4a;
+}
+
+/* Asegurar que el input con datalist (nombre producto) se vea bien y similar al select de categoría */
+input[list] {
+  appearance: none; /* Intentar homogeneizar en distintos navegadores */
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a0a0a0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 1em;
+  padding-right: 30px; /* Espacio para el icono */
+}
+
+input[list]:read-only {
+  background-image: none; /* No mostrar flecha si es read-only */
 }
 
 .form-group input:focus,

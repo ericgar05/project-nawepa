@@ -28,7 +28,7 @@ function AddPersonnelModal({ isOpen, onClose }) {
   const handleChange = (e) => {
     let { name, value } = e.target;
 
-    if (name === "nombre" || name === "apellido") {
+    if (name === "nombre" || name === "apellido" || name === "cargo") {
       value = value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑ\s]/g, "");
     } else if (name === "cedula") {
       value = value.replace(/\D/g, "");
