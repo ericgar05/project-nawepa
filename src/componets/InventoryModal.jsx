@@ -10,7 +10,7 @@ import logo from "../assets/logo.png";
 import EditProductModal from "./EditProductModal";
 
 function InventoryModal({ isOpen, onClose }) {
-  const { products, fetchProducts } = useInventory();
+  const { products, fetchProducts, categorias } = useInventory();
   const { userData } = useAuth(); // Obtenemos los datos del usuario
   const canDelete =
     userData?.nivel_nombre === "Administrador" ||
@@ -26,8 +26,6 @@ function InventoryModal({ isOpen, onClose }) {
   const [productToEdit, setProductToEdit] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-
-  const { categorias } = useInventory(); // Asegúrate de obtener las categorías del contexto si están disponibles ahí, o define cómo obtenerlas
 
   const filteredProducts = products.filter((item) => {
     const term = searchTerm.toLowerCase();
@@ -213,14 +211,12 @@ function InventoryModal({ isOpen, onClose }) {
               }}
             >
               <option value="">Todas las categorías</option>
-              {/* Extraer categorías únicas de los productos si 'categorias' no está en useInventory, pero asumimos que lo extraemos de los productos para estar seguros */}
-              {[...new Set(products.map((p) => p.categoria_nombre))].map(
-                (cat, index) => (
-                  <option key={index} value={cat}>
-                    {cat}
+              {categorias &&
+                categorias.map((cat) => (
+                  <option key={cat.id} value={cat.categoryname}>
+                    {cat.categoryname}
                   </option>
-                ),
-              )}
+                ))}
             </select>
           </div>
           <div style={{ display: "flex", gap: "10px" }}>

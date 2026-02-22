@@ -36,6 +36,7 @@ function AddPersonnelModal({ isOpen, onClose }) {
       if (value.length > 8) value = value.slice(0, 8);
     } else if (name === "telefono") {
       value = value.replace(/\D/g, "");
+      if (value.length > 11) value = value.slice(0, 11);
     }
 
     setFormPersonnel((prev) => ({
@@ -52,6 +53,13 @@ function AddPersonnelModal({ isOpen, onClose }) {
     // Validación de cédula (exactamente 8 números)
     if (formPersonnel.cedula.length !== 8) {
       setError("La cédula debe tener exactamente 8 números.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Validación de teléfono (exactamente 11 números)
+    if (formPersonnel.telefono.length !== 11) {
+      setError("El teléfono debe tener exactamente 11 números.");
       setIsSubmitting(false);
       return;
     }

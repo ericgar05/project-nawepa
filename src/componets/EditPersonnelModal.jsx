@@ -45,6 +45,7 @@ function EditPersonnelModal({ isOpen, onClose, employee, onUpdate }) {
       if (value.length > 8) value = value.slice(0, 8);
     } else if (name === "telefono") {
       value = value.replace(/\D/g, "");
+      if (value.length > 11) value = value.slice(0, 11);
     }
 
     setFormPersonnel((prev) => ({
@@ -60,6 +61,12 @@ function EditPersonnelModal({ isOpen, onClose, employee, onUpdate }) {
 
     if (formPersonnel.cedula.length !== 8) {
       setError("La cédula debe tener exactamente 8 números.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (formPersonnel.telefono.length !== 11) {
+      setError("El teléfono debe tener exactamente 11 números.");
       setIsSubmitting(false);
       return;
     }
