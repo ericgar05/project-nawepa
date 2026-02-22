@@ -63,7 +63,7 @@ function AddUserModal({ isOpen, onClose, niveles }) {
 
       if (!response.ok) {
         throw new Error(
-          responseData.error || responseData.detalle || "Error del servidor"
+          responseData.error || responseData.detalle || "Error del servidor",
         );
       }
 
@@ -75,7 +75,7 @@ function AddUserModal({ isOpen, onClose, niveles }) {
       // Manejo específico de errores de conexión
       if (error.name === "TypeError" && error.message.includes("fetch")) {
         setError(
-          "No se pudo conectar con el servidor. Verifica que esté ejecutándose en el puerto 4000."
+          "No se pudo conectar con el servidor. Verifica que esté ejecutándose en el puerto 4000.",
         );
       } else {
         setError(error.message);
@@ -93,7 +93,7 @@ function AddUserModal({ isOpen, onClose, niveles }) {
             &times;
           </button>
         </div>
-        <form onSubmit={handleSubmit} className="modal-form">
+        <form onSubmit={handleSubmit} className="modal-form" autoComplete="off">
           {error && <div className="error-banner">{error}</div>}
 
           <div className="form-group">
@@ -104,6 +104,7 @@ function AddUserModal({ isOpen, onClose, niveles }) {
               name="username"
               value={formUser.username}
               onChange={handleChange}
+              autoComplete="new-password"
               required
             />
           </div>
@@ -115,6 +116,7 @@ function AddUserModal({ isOpen, onClose, niveles }) {
               name="password"
               value={formUser.password}
               onChange={handleChange}
+              autoComplete="new-password"
               required
             />
           </div>

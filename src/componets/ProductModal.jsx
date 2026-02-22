@@ -41,9 +41,13 @@ const ProductModal = ({ isOpen, onClose, onAddProduct }) => {
               className="form-control"
               placeholder="Ej. Jabón líquido"
               value={formData.nombre}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, nombre: e.target.value }))
-              }
+              onChange={(e) => {
+                const val = e.target.value.replace(
+                  /[^A-Za-záéíóúÁÉÍÓÚñÑ\s]/g,
+                  "",
+                );
+                setFormData((prev) => ({ ...prev, nombre: val }));
+              }}
               required
             />
           </div>
@@ -56,9 +60,10 @@ const ProductModal = ({ isOpen, onClose, onAddProduct }) => {
               placeholder="Ej. 50"
               min="1"
               value={formData.cantidad}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, cantidad: e.target.value }))
-              }
+              onChange={(e) => {
+                const val = e.target.value.replace(/\D/g, "");
+                setFormData((prev) => ({ ...prev, cantidad: val }));
+              }}
               required
             />
           </div>

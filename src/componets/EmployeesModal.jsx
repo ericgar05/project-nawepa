@@ -86,6 +86,7 @@ function EmployeesModal({ isOpen, onClose }) {
         setEmployees((prevEmployees) =>
           prevEmployees.filter((emp) => emp.id !== id),
         );
+        window.alert("el personal a sido eliminado con éxito");
       } catch (error) {
         console.error("Error:", error);
         alert("No se pudo eliminar el empleado.");

@@ -21,7 +21,7 @@ function AssignProductModal({ employee, onClose }) {
 
     if (!productDetails) {
       setError(
-        "El producto seleccionado no es válido. Por favor, recarga e intenta de nuevo."
+        "El producto seleccionado no es válido. Por favor, recarga e intenta de nuevo.",
       );
       return;
     }
@@ -52,7 +52,7 @@ function AssignProductModal({ employee, onClose }) {
 
       if (!response.ok) {
         throw new Error(
-          responseData.detalle || "Error al asignar el producto."
+          responseData.detalle || "Error al asignar el producto.",
         );
       }
 
@@ -105,7 +105,7 @@ function AssignProductModal({ employee, onClose }) {
               id="cantidad"
               type="number"
               value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
+              onChange={(e) => setQuantity(e.target.value.replace(/\D/g, ""))}
               min="1"
               max={productDetailsForUI?.stock}
               required

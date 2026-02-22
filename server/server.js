@@ -86,7 +86,7 @@ app.get("/niveles", async (req, res) => {
 app.get("/personal", async (req, res) => {
   try {
     const result = await db.query({
-      text: "SELECT id, nombre, apellido, cargo FROM personal ORDER BY nombre ASC",
+      text: "SELECT id, nombre, apellido, cargo, cedula, telefono, correo FROM personal ORDER BY nombre ASC",
     });
     res.status(200).json(result.rows);
   } catch (error) {
@@ -275,9 +275,9 @@ app.put("/inventario/:id", async (req, res) => {
 
 app.post("/personal", async (req, res) => {
   try {
-    const { nombre, apellido, cargo } = req.body;
+    const { nombre, apellido, cargo, cedula, telefono, correo } = req.body;
 
-    if (!nombre || !apellido || !cargo) {
+    if (!nombre || !apellido || !cargo || !cedula || !telefono || !correo) {
       return res.status(400).json({
         error: "Todos los campos son obligatorios.",
       });
@@ -285,11 +285,11 @@ app.post("/personal", async (req, res) => {
 
     const result = await db.query({
       text: `
-        INSERT INTO personal (nombre, apellido, cargo) 
-        VALUES ($1, $2, $3) 
+        INSERT INTO personal (nombre, apellido, cargo, cedula, telefono, correo) 
+        VALUES ($1, $2, $3, $4, $5, $6) 
         RETURNING *;
       `,
-      params: [nombre, apellido, cargo],
+      params: [nombre, apellido, cargo, cedula, telefono, correo],
     });
 
     const newPersonnel = result.rows[0];
@@ -336,17 +336,17 @@ app.delete("/personal/:id", async (req, res) => {
 
 app.put("/personal/:id", async (req, res) => {
   const { id } = req.params;
-  const { nombre, apellido, cargo } = req.body;
+  const { nombre, apellido, cargo, cedula, telefono, correo } = req.body;
 
   try {
     const result = await db.query({
       text: `
         UPDATE personal 
-        SET nombre = $1, apellido = $2, cargo = $3
-        WHERE id = $4 
+        SET nombre = $1, apellido = $2, cargo = $3, cedula = $4, telefono = $5, correo = $6
+        WHERE id = $7 
         RETURNING *;
       `,
-      params: [nombre, apellido, cargo, id],
+      params: [nombre, apellido, cargo, cedula, telefono, correo, id],
     });
 
     if (result.rowCount === 0) {

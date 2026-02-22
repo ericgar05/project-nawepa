@@ -31,7 +31,14 @@ function EditProductModal({ isOpen, onClose, productToEdit }) {
   if (!isOpen) return null;
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
+
+    if (name === "nombre_producto") {
+      value = value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑ\s]/g, "");
+    } else if (name === "stock") {
+      value = value.replace(/\D/g, "");
+    }
+
     setFormData((prev) => ({
       ...prev,
       [name]:
@@ -48,6 +55,7 @@ function EditProductModal({ isOpen, onClose, productToEdit }) {
 
     try {
       await updateProduct(productToEdit.id, formData);
+      window.alert("el producto ha sido guardado correctamente");
       onClose();
     } catch (err) {
       setError(err.message);
@@ -76,6 +84,7 @@ function EditProductModal({ isOpen, onClose, productToEdit }) {
               name="nombre_producto"
               value={formData.nombre_producto}
               onChange={handleChange}
+              readOnly
               required
             />
           </div>
@@ -88,6 +97,7 @@ function EditProductModal({ isOpen, onClose, productToEdit }) {
               name="codigo_producto"
               value={formData.codigo_producto}
               onChange={handleChange}
+              readOnly
               required
             />
           </div>

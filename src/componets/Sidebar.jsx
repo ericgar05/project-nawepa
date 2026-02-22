@@ -76,6 +76,17 @@ function Sidebar({
             </button>
           </>
         )}
+
+        <a
+          href="/manual.pdf"
+          download="Manual_de_Usuario.pdf"
+          style={{ textDecoration: "none" }}
+        >
+          <button className="sidebar-button">
+            <IconBook />
+            Manual de Usuario
+          </button>
+        </a>
       </nav>
       <footer className="sidebar-footer">
         <button className="sidebar-button" onClick={handleLogout}>

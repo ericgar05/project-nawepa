@@ -39,7 +39,14 @@ function AddProductModal({ isOpen, onClose }) {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
+
+    if (name === "nombre_producto") {
+      value = value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑ\s]/g, "");
+    } else if (name === "stock") {
+      value = value.replace(/\D/g, "");
+    }
+
     //Cambiando la logica con respecto a los productos
     if (name === "nombre_producto") {
       const existingProduct = products.find((p) => p.nombre_producto === value);
@@ -103,6 +110,7 @@ function AddProductModal({ isOpen, onClose }) {
 
     try {
       await handleProduct(formInventory);
+      window.alert("el producto ha sido guardado correctamente");
       handleClose();
     } catch (error) {
       setError(error.message);
@@ -127,14 +135,23 @@ function AddProductModal({ isOpen, onClose }) {
             <label htmlFor="nombre_producto">Nombre del Producto</label>
             <input
               id="nombre_producto"
+              list="product-names"
               type="text"
               name="nombre_producto"
               value={formInventory.nombre_producto}
               onChange={handleChange}
-              //Que hace readOnly
               readOnly={isExistingProduct}
+              autoComplete="off"
               required
             />
+            <datalist id="product-names">
+              {/* Usar Set para no repetir nombres de la base de datos */}
+              {[...new Set(products.map((p) => p.nombre_producto))].map(
+                (nombre, idx) => (
+                  <option key={`name-${idx}`} value={nombre}></option>
+                ),
+              )}
+            </datalist>
           </div>
           <div className="form-group">
             <label htmlFor="codigo_producto">Código del Producto</label>

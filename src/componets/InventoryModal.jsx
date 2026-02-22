@@ -24,6 +24,16 @@ function InventoryModal({ isOpen, onClose }) {
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [productToEdit, setProductToEdit] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredProducts = products.filter((item) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      item.nombre_producto.toLowerCase().includes(term) ||
+      item.codigo_producto.toLowerCase().includes(term) ||
+      item.categoria_nombre.toLowerCase().includes(term)
+    );
+  });
 
   const handleDelete = async (productId, productName) => {
     const isConfirmed = window.confirm(
@@ -44,6 +54,7 @@ function InventoryModal({ isOpen, onClose }) {
         }
 
         await fetchProducts();
+        window.alert("el producto a sido eliminado con éxito");
       } catch (error) {
         alert(error.message);
       }
@@ -81,7 +92,7 @@ function InventoryModal({ isOpen, onClose }) {
       autoTable(doc, {
         startY: 45,
         head: [["Producto", "Código", "Categoría", "Stock", "Fecha Entrada"]],
-        body: products.map((item) => [
+        body: filteredProducts.map((item) => [
           item.nombre_producto,
           item.codigo_producto,
           item.categoria_nombre,
@@ -113,7 +124,7 @@ function InventoryModal({ isOpen, onClose }) {
       autoTable(doc, {
         startY: 20,
         head: [["Producto", "Código", "Categoría", "Stock", "Fecha Entrada"]],
-        body: products.map((item) => [
+        body: filteredProducts.map((item) => [
           item.nombre_producto,
           item.codigo_producto,
           item.categoria_nombre,
@@ -155,36 +166,63 @@ function InventoryModal({ isOpen, onClose }) {
             &times;
           </button>
         </div>
-        <div className="modal-actions" style={{ marginBottom: "1rem" }}>
-          <button className="btn-export" onClick={handleExportPDF}>
-            Exportar a PDF
-          </button>
-          <button
-            className="btn-export"
-            onClick={() => {
-              /* Existing Excel Logic - kept separate or inline if needed, but for now just showing both */
-              /* NOTE: The original logic was separate, but I'm just appending the PDF button. */
-              /* Need to restore Excel function call if I replaced the button completely?
+        <div
+          className="modal-actions"
+          style={{
+            marginBottom: "1rem",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: "10px",
+          }}
+        >
+          <div className="search-container">
+            <input
+              type="text"
+              placeholder="Buscar por producto, código, categoría..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+              style={{
+                padding: "0.5rem",
+                borderRadius: "5px",
+                border: "1px solid #ccc",
+                minWidth: "300px",
+              }}
+            />
+          </div>
+          <div style={{ display: "flex", gap: "10px" }}>
+            <button className="btn-export" onClick={handleExportPDF}>
+              Exportar a PDF
+            </button>
+            <button
+              className="btn-export"
+              onClick={() => {
+                /* Existing Excel Logic - kept separate or inline if needed, but for now just showing both */
+                /* NOTE: The original logic was separate, but I'm just appending the PDF button. */
+                /* Need to restore Excel function call if I replaced the button completely?
                  Ah, I see I am replacing lines around the buttons. I should keep the Excel button too.
               */
-              const dataToExport = products.map((item) => ({
-                Producto: item.nombre_producto,
-                Código: item.codigo_producto,
-                Categoría: item.categoria_nombre,
-                Stock: item.stock,
-                "Fecha de Entrada": new Date(
-                  item.fecha_entrada,
-                ).toLocaleDateString(),
-              }));
+                const dataToExport = filteredProducts.map((item) => ({
+                  Producto: item.nombre_producto,
+                  Código: item.codigo_producto,
+                  Categoría: item.categoria_nombre,
+                  Stock: item.stock,
+                  "Fecha de Entrada": new Date(
+                    item.fecha_entrada,
+                  ).toLocaleDateString(),
+                }));
 
-              const worksheet = XLSX.utils.json_to_sheet(dataToExport);
-              const workbook = XLSX.utils.book_new();
-              XLSX.utils.book_append_sheet(workbook, worksheet, "Inventario");
-              XLSX.writeFile(workbook, "Reporte_Inventario.xlsx");
-            }}
-          >
-            Exportar a Excel
-          </button>
+                const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Inventario");
+                XLSX.writeFile(workbook, "Reporte_Inventario.xlsx");
+              }}
+            >
+              Exportar a Excel
+            </button>
+          </div>
         </div>
         <div className="inventory-table-container">
           <table className="inventory-table">
@@ -199,7 +237,7 @@ function InventoryModal({ isOpen, onClose }) {
               </tr>
             </thead>
             <tbody>
-              {products.map((item) => (
+              {filteredProducts.map((item) => (
                 <tr key={item.id}>
                   <td>{item.nombre_producto}</td>
                   <td>{item.codigo_producto}</td>
