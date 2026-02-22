@@ -193,6 +193,7 @@ function AddProductModal({ isOpen, onClose }) {
               value={formInventory.codigo_producto}
               onChange={handleChange}
               autoComplete="off"
+              readOnly={isExistingProduct}
               required
             />
             <datalist id="product-codes">
