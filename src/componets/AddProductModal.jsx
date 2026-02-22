@@ -163,8 +163,7 @@ function AddProductModal({ isOpen, onClose }) {
                 setShowDropdown(true);
               }}
               onBlur={() => {
-                // Pequeño timeout para permitir click en opciones
-                setTimeout(() => setShowDropdown(false), 200);
+                setShowDropdown(false);
               }}
               readOnly={isExistingProduct}
               autoComplete="off"
@@ -175,7 +174,7 @@ function AddProductModal({ isOpen, onClose }) {
                 {filteredNames.map((nombre, idx) => (
                   <li
                     key={idx}
-                    onClick={() => handleNameSelect(nombre)}
+                    onMouseDown={() => handleNameSelect(nombre)}
                     className="custom-dropdown-item"
                   >
                     {nombre}
