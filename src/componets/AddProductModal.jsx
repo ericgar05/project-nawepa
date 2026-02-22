@@ -17,6 +17,11 @@ function AddProductModal({ isOpen, onClose }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isExistingProduct, setIsExistingProduct] = useState(false);
   const [error, setError] = useState(null);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [filteredNames, setFilteredNames] = useState([]);
+
+  // Get unique product names
+  const uniqueNames = [...new Set(products.map((p) => p.nombre_producto))];
 
   if (!isOpen) {
     return null;
@@ -85,6 +90,19 @@ function AddProductModal({ isOpen, onClose }) {
         [name]: newValue,
       }));
     }
+
+    if (name === "nombre_producto") {
+      const filtered = uniqueNames.filter((n) =>
+        n.toLowerCase().includes(value.toLowerCase()),
+      );
+      setFilteredNames(filtered);
+      setShowDropdown(true);
+    }
+  };
+
+  const handleNameSelect = (name) => {
+    handleChange({ target: { name: "nombre_producto", value: name } });
+    setShowDropdown(false);
   };
 
   const handleSubmit = async (e) => {
@@ -131,27 +149,40 @@ function AddProductModal({ isOpen, onClose }) {
         </div>
         <form onSubmit={handleSubmit} className="modal-form">
           {error && <div className="error-banner">{error}</div>}
-          <div className="form-group">
+          <div className="form-group" style={{ position: "relative" }}>
             <label htmlFor="nombre_producto">Nombre del Producto</label>
             <input
               id="nombre_producto"
-              list="product-names"
               type="text"
               name="nombre_producto"
+              className="custom-dropdown-input"
               value={formInventory.nombre_producto}
               onChange={handleChange}
+              onFocus={() => {
+                setFilteredNames(uniqueNames);
+                setShowDropdown(true);
+              }}
+              onBlur={() => {
+                // Pequeño timeout para permitir click en opciones
+                setTimeout(() => setShowDropdown(false), 200);
+              }}
               readOnly={isExistingProduct}
               autoComplete="off"
               required
             />
-            <datalist id="product-names">
-              {/* Usar Set para no repetir nombres de la base de datos */}
-              {[...new Set(products.map((p) => p.nombre_producto))].map(
-                (nombre, idx) => (
-                  <option key={`name-${idx}`} value={nombre}></option>
-                ),
-              )}
-            </datalist>
+            {showDropdown && !isExistingProduct && filteredNames.length > 0 && (
+              <ul className="custom-dropdown-list">
+                {filteredNames.map((nombre, idx) => (
+                  <li
+                    key={idx}
+                    onClick={() => handleNameSelect(nombre)}
+                    className="custom-dropdown-item"
+                  >
+                    {nombre}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           <div className="form-group">
             <label htmlFor="codigo_producto">Código del Producto</label>
