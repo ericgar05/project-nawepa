@@ -133,7 +133,10 @@ function EmployeesModal({ isOpen, onClose }) {
   return (
     <>
       <div className="modal-overlay" onClick={onClose}>
-        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="modal-content inventory-modal-content"
+          onClick={(e) => e.stopPropagation()}
+        >
           <div className="modal-header">
             <h2>Gestionar Empleados</h2>
             <button className="close-button" onClick={onClose}>
@@ -145,7 +148,7 @@ function EmployeesModal({ isOpen, onClose }) {
               Exportar a PDF
             </button>
           </div>
-          <div className="inventory-list">
+          <div className="inventory-table-container">
             {loading && <p>Cargando empleados...</p>}
             {error && <p className="error-message">{error}</p>}
             {!loading && !error && (
