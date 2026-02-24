@@ -18,6 +18,7 @@ function Sidebar({
   onAddUserClick,
   onViewEmployeesClick,
   onViewHistoryClick,
+  onViewManualClick,
 }) {
   const { userData } = useAuth();
   const { handleLogout } = useAuth();
@@ -77,16 +78,10 @@ function Sidebar({
           </>
         )}
 
-        <a
-          href="/manual.pdf"
-          download="Manual_de_Usuario.pdf"
-          style={{ textDecoration: "none" }}
-        >
-          <button className="sidebar-button">
-            <IconBook />
-            Manual de Usuario
-          </button>
-        </a>
+        <button className="sidebar-button" onClick={onViewManualClick}>
+          <IconBook />
+          Manual de Usuario
+        </button>
       </nav>
       <footer className="sidebar-footer">
         <button className="sidebar-button" onClick={handleLogout}>
