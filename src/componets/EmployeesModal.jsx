@@ -99,7 +99,14 @@ function EmployeesModal({ isOpen, onClose }) {
     const doc = new jsPDF();
     doc.text("Reporte de Empleados", 14, 15);
 
-    const tableColumn = ["Nombre", "Apellido", "Cédula", "Correo", "Cargo"];
+    const tableColumn = [
+      "Nombre",
+      "Apellido",
+      "Cédula",
+      "Correo",
+      "Teléfono",
+      "Cargo",
+    ];
     const tableRows = [];
 
     employees.forEach((employee) => {
@@ -108,6 +115,7 @@ function EmployeesModal({ isOpen, onClose }) {
         employee.apellido,
         employee.cedula || "N/A",
         employee.correo || "N/A",
+        employee.telefono || "N/A",
         employee.cargo,
       ];
       tableRows.push(employeeData);
@@ -148,6 +156,7 @@ function EmployeesModal({ isOpen, onClose }) {
                     <th>Apellido</th>
                     <th>Cédula</th>
                     <th>Correo</th>
+                    <th>Teléfono</th>
                     <th>Cargo</th>
                     <th>Acciones</th>
                   </tr>
@@ -159,6 +168,7 @@ function EmployeesModal({ isOpen, onClose }) {
                       <td>{employee.apellido}</td>
                       <td>{employee.cedula || "N/A"}</td>
                       <td>{employee.correo || "N/A"}</td>
+                      <td>{employee.telefono || "N/A"}</td>
                       <td>{employee.cargo}</td>
                       <td className="actions-cell">
                         <button
