@@ -10,7 +10,6 @@ import DeliveryHistoryModal from "../componets/DeliveryHistoryModal";
 import PersonalPanel from "../componets/PersonalPanel";
 import EmployeesModal from "../componets/EmployeesModal";
 import AddPersonnelModal from "../componets/AddPersonnelModal";
-import ManualModal from "../componets/ManualModal";
 
 function HomePage() {
   const [isAddProductModalOpen, setAddProductModalOpen] = useState(false);
@@ -19,7 +18,6 @@ function HomePage() {
   const [isEmployeesModalOpen, setEmployeesModalOpen] = useState(false);
   const [isUserModalOpen, setUserModalOpen] = useState(false);
   const [isHistoryModalOpen, setHistoryModalOpen] = useState(false);
-  const [isManualModalOpen, setManualModalOpen] = useState(false);
   const [niveles, setNiveles] = useState([]);
 
   const handleOpenInventoryModal = () => {
@@ -58,7 +56,6 @@ function HomePage() {
         onViewEmployeesClick={() => setEmployeesModalOpen(true)}
         onAddUserClick={() => setUserModalOpen(true)}
         onViewHistoryClick={handleOpenHistoryModal}
-        onViewManualClick={() => setManualModalOpen(true)}
       />
       <main className="main-content">
         <section className="header-content">
@@ -80,10 +77,6 @@ function HomePage() {
           <DeliveryHistoryModal
             isOpen={isHistoryModalOpen}
             onClose={handleCloseHistoryModal}
-          />
-          <ManualModal
-            isOpen={isManualModalOpen}
-            onClose={() => setManualModalOpen(false)}
           />
           <AddUserModal
             isOpen={isUserModalOpen}
