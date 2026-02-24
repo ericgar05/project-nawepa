@@ -8,7 +8,8 @@ import {
   IconDelete,
 } from "../assets/icons/Icons";
 import "../styles/InventoryModal.css";
-import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 function EmployeesModal({ isOpen, onClose }) {
   const [employees, setEmployees] = useState([]);
@@ -95,19 +96,30 @@ function EmployeesModal({ isOpen, onClose }) {
   };
 
   const handleExportPDF = () => {
-    const dataToExport = employees.map((employee) => ({
-      Nombre: employee.nombre,
-      Apellido: employee.apellido,
-      Cargo: employee.cargo,
-    }));
+    const doc = new jsPDF();
+    doc.text("Reporte de Empleados", 14, 15);
 
-    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Empleados");
+    const tableColumn = ["Nombre", "Apellido", "Cédula", "Correo", "Cargo"];
+    const tableRows = [];
 
-    worksheet["!cols"] = [{ wch: 20 }, { wch: 20 }, { wch: 25 }];
+    employees.forEach((employee) => {
+      const employeeData = [
+        employee.nombre,
+        employee.apellido,
+        employee.cedula || "N/A",
+        employee.correo || "N/A",
+        employee.cargo,
+      ];
+      tableRows.push(employeeData);
+    });
 
-    XLSX.writeFile(workbook, "Reporte_Empleados.xlsx");
+    doc.autoTable({
+      head: [tableColumn],
+      body: tableRows,
+      startY: 20,
+    });
+
+    doc.save("Reporte_Empleados.pdf");
   };
 
   return (
@@ -122,7 +134,7 @@ function EmployeesModal({ isOpen, onClose }) {
           </div>
           <div className="modal-actions" style={{ marginBottom: "1rem" }}>
             <button className="btn-export" onClick={handleExportPDF}>
-              Exportar a Excel
+              Exportar a PDF
             </button>
           </div>
           <div className="inventory-list">
@@ -134,6 +146,8 @@ function EmployeesModal({ isOpen, onClose }) {
                   <tr>
                     <th>Nombre</th>
                     <th>Apellido</th>
+                    <th>Cédula</th>
+                    <th>Correo</th>
                     <th>Cargo</th>
                     <th>Acciones</th>
                   </tr>
@@ -143,6 +157,8 @@ function EmployeesModal({ isOpen, onClose }) {
                     <tr key={employee.id}>
                       <td>{employee.nombre}</td>
                       <td>{employee.apellido}</td>
+                      <td>{employee.cedula || "N/A"}</td>
+                      <td>{employee.correo || "N/A"}</td>
                       <td>{employee.cargo}</td>
                       <td className="actions-cell">
                         <button
