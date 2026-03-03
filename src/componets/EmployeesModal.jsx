@@ -11,6 +11,7 @@ import "../styles/InventoryModal.css";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import logo from "../assets/logo.png";
+import * as XLSX from "xlsx";
 
 function EmployeesModal({ isOpen, onClose }) {
   const [employees, setEmployees] = useState([]);
@@ -182,6 +183,33 @@ function EmployeesModal({ isOpen, onClose }) {
     };
   };
 
+  const handleExportExcel = () => {
+    const dataToExport = employees.map((employee) => ({
+      Nombre: employee.nombre,
+      Apellido: employee.apellido,
+      Cédula: employee.cedula || "N/A",
+      Correo: employee.correo || "N/A",
+      Teléfono: employee.telefono || "N/A",
+      Cargo: employee.cargo,
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Personal");
+
+    // Ajustar el ancho de las columnas
+    worksheet["!cols"] = [
+      { wch: 20 }, // Nombre
+      { wch: 20 }, // Apellido
+      { wch: 15 }, // Cédula
+      { wch: 25 }, // Correo
+      { wch: 15 }, // Teléfono
+      { wch: 20 }, // Cargo
+    ];
+
+    XLSX.writeFile(workbook, "Reporte_Personal.xlsx");
+  };
+
   return (
     <>
       <div className="modal-overlay" onClick={onClose}>
@@ -195,9 +223,15 @@ function EmployeesModal({ isOpen, onClose }) {
               &times;
             </button>
           </div>
-          <div className="modal-actions" style={{ marginBottom: "1rem" }}>
+          <div
+            className="modal-actions"
+            style={{ marginBottom: "1rem", display: "flex", gap: "10px" }}
+          >
             <button className="btn-export" onClick={handleExportPDF}>
               Exportar a PDF
+            </button>
+            <button className="btn-export" onClick={handleExportExcel}>
+              Exportar a Excel
             </button>
           </div>
           <div className="inventory-table-container">
