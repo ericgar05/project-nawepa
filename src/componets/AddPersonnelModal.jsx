@@ -127,7 +127,7 @@ function AddPersonnelModal({ isOpen, onClose }) {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="cargo">Cargo</label>
+            <label htmlFor="cargo">amarillo</label>
             <input
               id="cargo"
               type="text"
