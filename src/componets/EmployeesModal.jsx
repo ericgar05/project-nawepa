@@ -9,7 +9,8 @@ import {
 } from "../assets/icons/Icons";
 import "../styles/InventoryModal.css";
 import jsPDF from "jspdf";
-import "jspdf-autotable";
+import autoTable from "jspdf-autotable";
+import logo from "../assets/logo.png";
 
 function EmployeesModal({ isOpen, onClose }) {
   const [employees, setEmployees] = useState([]);
@@ -97,37 +98,88 @@ function EmployeesModal({ isOpen, onClose }) {
 
   const handleExportPDF = () => {
     const doc = new jsPDF();
-    doc.text("Reporte de Empleados", 14, 15);
 
-    const tableColumn = [
-      "Nombre",
-      "Apellido",
-      "Cédula",
-      "Correo",
-      "Teléfono",
-      "Cargo",
-    ];
-    const tableRows = [];
+    // Configurar la imagen del logo
+    const img = new Image();
+    img.src = logo;
 
-    employees.forEach((employee) => {
-      const employeeData = [
-        employee.nombre,
-        employee.apellido,
-        employee.cedula || "N/A",
-        employee.correo || "N/A",
-        employee.telefono || "N/A",
-        employee.cargo,
-      ];
-      tableRows.push(employeeData);
-    });
+    img.onload = () => {
+      // Dibujar logo
+      doc.addImage(img, "PNG", 14, 10, 30, 30); // x, y, ancho, alto
 
-    doc.autoTable({
-      head: [tableColumn],
-      body: tableRows,
-      startY: 20,
-    });
+      // Título y datos de la empresa
+      doc.setFontSize(18);
+      doc.text("Reporte de Personal", 50, 20);
+      doc.setFontSize(10);
+      doc.text("Empresa Nawepa", 50, 28);
+      doc.text(
+        `Fecha: ${new Date().toLocaleDateString()} - Hora: ${new Date().toLocaleTimeString()}`,
+        50,
+        34,
+      );
 
-    doc.save("Reporte_Empleados.pdf");
+      // Tabla
+      autoTable(doc, {
+        startY: 45,
+        head: [["Nombre", "Apellido", "Cédula", "Correo", "Teléfono", "Cargo"]],
+        body: employees.map((employee) => [
+          employee.nombre,
+          employee.apellido,
+          employee.cedula || "N/A",
+          employee.correo || "N/A",
+          employee.telefono || "N/A",
+          employee.cargo,
+        ]),
+        styles: { fontSize: 8 },
+        headStyles: { fillColor: [22, 160, 133] }, // Mismo color que InventoryModal
+      });
+
+      // Firma Centrada
+      const finalY = doc.lastAutoTable.finalY;
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const centerX = pageWidth / 2;
+      const lineLength = 70;
+      const startX = centerX - lineLength / 2;
+      const endX = centerX + lineLength / 2;
+
+      doc.line(startX, finalY + 40, endX, finalY + 40);
+      doc.text("Firma de Responsable", centerX, finalY + 45, {
+        align: "center",
+      });
+
+      doc.save("Reporte_Personal.pdf");
+    };
+
+    img.onerror = () => {
+      // Fallback si no carga la imagen
+      autoTable(doc, {
+        startY: 20,
+        head: [["Nombre", "Apellido", "Cédula", "Correo", "Teléfono", "Cargo"]],
+        body: employees.map((employee) => [
+          employee.nombre,
+          employee.apellido,
+          employee.cedula || "N/A",
+          employee.correo || "N/A",
+          employee.telefono || "N/A",
+          employee.cargo,
+        ]),
+      });
+
+      // Firma (Fallback) - Centrada
+      const finalY = doc.lastAutoTable.finalY;
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const centerX = pageWidth / 2;
+      const lineLength = 70;
+      const startX = centerX - lineLength / 2;
+      const endX = centerX + lineLength / 2;
+
+      doc.line(startX, finalY + 40, endX, finalY + 40);
+      doc.text("Firma de Responsable", centerX, finalY + 45, {
+        align: "center",
+      });
+
+      doc.save("Reporte_Personal.pdf");
+    };
   };
 
   return (
